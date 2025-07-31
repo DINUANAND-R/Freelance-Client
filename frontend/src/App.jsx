@@ -1,17 +1,18 @@
 // App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import LandingPage from './Components/LandingPage';
-import RoleSelectionPage from './Components/RoleSelectionPage';
-import ClientLogin from './Components/ClientLogin';
-import ClientSignUP from './Components/ClientSignUp';
-import FreelancerSignUp from './Components/FreelancerSignUp';
-import FreelancerLogin from './Components/FreelancerLogin';
-import AdminLogin from './Components/AdminLogin';
-import ClientDashboard from './Components/ClientDashboard';
-import FreelancerDashboard from './Components/FreelancerDashboard';
-import FreelancersList from './Components/FreelancersList';
-import Chat from './Components/Chat'
+import FreelancersList from './Components/Freelancer/FreelancersList';
+import FreelancerDashboar from './Components/Freelancer/FreelancerDashboard';
+import ClientDashboard from './Components/Client/ClientDashboard';
+import AdminLogin from './Components/Home/AdminLogin';
+import ClientSignUP from './Components/Client/ClientSignUp';
+import FreelancerLogin from './Components/Freelancer/FreelancerLogin';
+import FreelancerSignUp from './Components/Freelancer/FreelancerSignUp';
+import ClientLogin from './Components/Client/ClientLogin';
+import RoleSelectionPage from './Components/Home/RoleSelectionPage';
+import LandingPage from './Components/Home/LandingPage';
+import Chat from './Components/Chating/Chat';
+import ChatComponent from './Components/Chating/ChatComponent';
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
       <Route path='/freelancer/Login' element={<FreelancerLogin/>}/>
       <Route path='/admin/Login' element={<AdminLogin/>}/>
       <Route path='/client/dashboard' element={<ClientDashboard/>}/>
-      <Route path='/freelancer/dashboard' element={<FreelancerDashboard/>}/>
+      <Route path='/freelancer/dashboard' element={<FreelancerDashboar/>}/>
       <Route path='/freelancers' element={<FreelancersList/>}/>
       <Route path='/chat' element={<Chat/>}/>
     </Routes>

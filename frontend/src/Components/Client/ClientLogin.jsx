@@ -5,24 +5,19 @@ import axios from 'axios';
 
 export default function ClientLogin() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const res = await axios.post(
         'http://localhost:9000/api/client/login',
         { email, password },
         { withCredentials: true }
       );
-
       console.log('✅ Login successful:', res.data);
-
-      // Navigate to client dashboard with client data
       navigate('/client/dashboard', {
         state: { client: res.data.client },
       });
@@ -47,9 +42,7 @@ export default function ClientLogin() {
           ← Back
         </button>
 
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Client Login
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Client Login</h2>
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
@@ -91,7 +84,6 @@ export default function ClientLogin() {
           </motion.button>
         </form>
 
-        {/* ✅ Add this line */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{' '}
           <button

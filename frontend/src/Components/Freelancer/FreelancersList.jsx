@@ -1,3 +1,4 @@
+// ✅ FreelancersList.jsx
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -15,8 +16,12 @@ export default function FreelancersList() {
   }, []);
 
   const handleConnect = (freelancer) => {
-    // Example navigation or action – you can change this to open a chat, send a message, etc.
-    navigate('/messages', { state: { to: freelancer.name, email: freelancer.email } });
+    navigate('/chat', {
+      state: {
+        currentUserEmail: email,
+        targetUserEmail: freelancer.email,
+      },
+    });
   };
 
   return (
@@ -28,18 +33,6 @@ export default function FreelancersList() {
             <p className="text-sm text-gray-600">Logged in as <span className="text-green-600 font-medium">{name}</span></p>
             <p className="text-xs text-gray-500">{email}</p>
           </div>
-          <nav className="space-x-6 hidden md:flex">
-            <button onClick={() => navigate(-1)} className="hover:text-green-600 font-medium">Home</button>
-            <button onClick={() => navigate('/my-projects')} className="hover:text-green-600 font-medium">My Projects</button>
-            <button onClick={() => navigate('/messages')} className="hover:text-green-600 font-medium">Messages</button>
-            <button onClick={() => navigate('/settings')} className="hover:text-green-600 font-medium">Settings</button>
-            <button
-              onClick={() => navigate('/')}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
-            >
-              Logout
-            </button>
-          </nav>
         </div>
       </header>
 
