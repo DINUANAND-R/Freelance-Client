@@ -1,6 +1,7 @@
 // ✅ Routers/ClientRouter.js
 const express = require('express');
 const router = express.Router();
+const Client=require('../Modules/ClientModule')
 const multer = require('multer');
 const {
   registerClient,
@@ -12,6 +13,15 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 const upload = multer({ storage });
+
+router.get('/all', async (req, res) => {
+  try {
+    const clients = await Client.find();
+    res.json(clients);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch clients' });
+  }
+});
 
 router.post('/register', upload.single('photo'), registerClient);
 router.post('/login', loginClient);

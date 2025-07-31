@@ -1,39 +1,41 @@
 import { useRef, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import axios from 'axios';
 
 export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
   const socket = useRef(null);
+  const messagesEndRef = useRef(null);
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    // Connect to Socket.IO server
     socket.current = io('http://localhost:9000', {
       transports: ['websocket'],
     });
 
-    // Join user's email room
     socket.current.emit('join', currentUserEmail);
 
-    // Fetch message history between current user and target user
-    axios
-      .get(`http://localhost:9000/api/messages/${currentUserEmail}/${targetUserEmail}`)
-      .then((res) => setMessages(res.data))
-      .catch((err) => console.error('Failed to fetch messages', err));
+    fetch(`http://localhost:9000/api/messages/${currentUserEmail}/${targetUserEmail}`)
+      .then(res => res.json())
+      .then(data => setMessages(data))
+      .catch(err => console.error('Message fetch failed:', err));
 
-    // Listen for new incoming messages
     socket.current.on('receiveMessage', (msg) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages(prev => [...prev, msg]);
     });
 
-    // Clean up on unmount
     return () => {
       socket.current.disconnect();
     };
   }, [currentUserEmail, targetUserEmail]);
 
-  const handleSend = async () => {
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  const handleSend = () => {
     if (!message.trim()) return;
 
     const newMsg = {
@@ -42,52 +44,66 @@ export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
       messageText: message.trim(),
       timestamp: new Date(),
     };
-     console.log(currentUserEmail);
-      console.log(targetUserEmail);
-    // Emit message through socket
+
     socket.current.emit('sendMessage', newMsg);
-
-    try {
-      // Store message in database
-      await axios.post('http://localhost:9000/api/messages/send', newMsg);
-    } catch (error) {
-      console.error('Failed to store message', error);
-    }
-
-    // Update UI and clear input
-    setMessages((prev) => [...prev, newMsg]);
+    setMessages(prev => [...prev, newMsg]);
     setMessage('');
   };
 
   return (
-    <div className="p-4 border rounded w-full max-w-md mx-auto">
-      <h2 className="text-lg font-bold mb-2">Chat with {targetUserEmail}</h2>
-      <div className="h-64 overflow-y-scroll border p-2 bg-gray-100 mb-4">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`mb-2 ${msg.senderEmail === currentUserEmail ? 'text-right' : 'text-left'}`}
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-200">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-4 text-lg font-semibold flex justify-between items-center">
+          <div>Chat with {targetUserEmail}</div>
+          <div className="text-sm text-blue-200">{currentUserEmail}</div>
+        </div>
+
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 custom-scroll">
+          {messages.map((msg, idx) => (
+            <div
+              key={idx}
+              className={`flex ${
+                msg.senderEmail === currentUserEmail ? 'justify-end' : 'justify-start'
+              }`}
+            >
+              <div
+                className={`max-w-sm px-4 py-2 rounded-lg text-sm shadow ${
+                  msg.senderEmail === currentUserEmail
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-800'
+                }`}
+              >
+                <div>{msg.messageText}</div>
+                <div className="text-[10px] mt-1 text-right opacity-60">
+                  {new Date(msg.timestamp).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Message Input */}
+        <div className="flex items-center border-t px-4 py-3 gap-3 bg-white">
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message..."
+            className="flex-grow px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+          />
+          <button
+            onClick={handleSend}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-medium transition"
           >
-            <span className="block p-2 bg-white rounded shadow">{msg.messageText}</span>
-            <small className="text-xs text-gray-500">
-              {new Date(msg.timestamp).toLocaleTimeString()}
-            </small>
-          </div>
-        ))}
-      </div>
-      <div className="flex gap-2">
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="flex-grow p-2 border rounded"
-          placeholder="Type your message"
-        />
-        <button
-          onClick={handleSend}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Send
-        </button>
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );

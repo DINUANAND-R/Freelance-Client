@@ -13,6 +13,8 @@ import RoleSelectionPage from './Components/Home/RoleSelectionPage';
 import LandingPage from './Components/Home/LandingPage';
 import Chat from './Components/Chating/Chat';
 import ChatComponent from './Components/Chating/ChatComponent';
+import ClientsList from './Components/Client/ClientsList';
+import ClientProject from './Components/Client/ClientProjects';
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
       <Route path='/freelancer/dashboard' element={<FreelancerDashboar/>}/>
       <Route path='/freelancers' element={<FreelancersList/>}/>
       <Route path='/chat' element={<Chat/>}/>
+      <Route path='/clients' element={<ClientsList/>}/>
+      <Route path='/client/project-request' element={<ClientProject/>}/>
     </Routes>
   );
 }

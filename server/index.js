@@ -27,6 +27,7 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+
 // Routes
 const clientRoutes = require('./Routers/ClientRouter');
 app.use('/api/client', clientRoutes);
@@ -36,6 +37,11 @@ app.use('/api/freelancers', freelancerRoutes);
 
 const messageRoutes = require('./Routers/MessageRouter');
 app.use('/api/messages', messageRoutes);
+
+const projectRoutes = require('./Routers/ProjectRouter');
+app.use('/api/project', projectRoutes);
+
+
 
 // Socket.IO real-time messaging
 io.on('connection', (socket) => {

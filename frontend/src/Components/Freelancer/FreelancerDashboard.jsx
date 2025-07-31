@@ -6,9 +6,8 @@ export default function FreelancerDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Extract freelancer info passed from login
   const freelancer = location.state || {};
-  const { name, email, image } = freelancer;
+  const { name, email } = freelancer;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-green-100 text-gray-800 font-sans">
@@ -21,7 +20,7 @@ export default function FreelancerDashboard() {
             <p className="text-xs text-gray-500">{email}</p>
           </div>
           <nav className="space-x-6 hidden md:flex">
-            <button onClick={() => navigate('/my-projects')} className="hover:text-green-600 font-medium">My Projects</button>
+            <button onClick={() => navigate('/clients', { state: { name, email } })} className="hover:text-green-600 font-medium">Clients</button>
             <button onClick={() => navigate('/messages')} className="hover:text-green-600 font-medium">Messages</button>
             <button onClick={() => navigate('/settings')} className="hover:text-green-600 font-medium">Settings</button>
             <button
@@ -44,9 +43,8 @@ export default function FreelancerDashboard() {
         </p>
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-5xl mx-auto mb-16">
-          {/* View Projects */}
           <div
-            onClick={() => navigate('/my-projects', { state: { freelancerID, email } })}
+            onClick={() => navigate('/my-projects', { state: { email } })}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaProjectDiagram className="text-green-600 text-3xl mb-3 group-hover:scale-110 transition" />
@@ -54,9 +52,8 @@ export default function FreelancerDashboard() {
             <p className="text-gray-600 text-sm">View your ongoing and completed projects.</p>
           </div>
 
-          {/* Messages */}
           <div
-            onClick={() => navigate('/messages', { state: { freelancerID, email } })}
+            onClick={() => navigate('/messages', { state: { email } })}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaEnvelope className="text-green-600 text-3xl mb-3 group-hover:scale-110 transition" />
@@ -64,9 +61,8 @@ export default function FreelancerDashboard() {
             <p className="text-gray-600 text-sm">Communicate with clients and respond to offers.</p>
           </div>
 
-          {/* Settings */}
           <div
-            onClick={() => navigate('/settings', { state: { freelancerID, email } })}
+            onClick={() => navigate('/settings', { state: { email } })}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaUserCog className="text-green-600 text-3xl mb-3 group-hover:rotate-90 transition" />
