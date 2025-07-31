@@ -1,17 +1,18 @@
 import { useRef, useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
   const socket = useRef(null);
   const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socket.current = io('http://localhost:9000', {
-      transports: ['websocket'],
-    });
+    socket.current = io('http://localhost:9000', { transports: ['websocket'] });
 
     socket.current.emit('join', currentUserEmail);
 
@@ -50,17 +51,31 @@ export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
     setMessage('');
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center p-6">
+      <div className="w-full max-w-5xl h-[90vh] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-gray-300">
+        
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-4 text-lg font-semibold flex justify-between items-center">
-          <div>Chat with {targetUserEmail}</div>
-          <div className="text-sm text-blue-200">{currentUserEmail}</div>
+        <div className="bg-white border-b px-8 py-6 flex items-center gap-6 shadow-md">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-blue-600 hover:text-blue-800 transition"
+          >
+            <ArrowLeft size={32} />
+          </button>
+          <div className="text-2xl font-bold text-gray-800">
+            Chat with {targetUserEmail}
+          </div>
         </div>
 
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 custom-scroll">
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto px-10 py-6 space-y-6 bg-gradient-to-br from-blue-50 to-white text-lg">
           {messages.map((msg, idx) => (
             <div
               key={idx}
@@ -69,14 +84,14 @@ export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
               }`}
             >
               <div
-                className={`max-w-sm px-4 py-2 rounded-lg text-sm shadow ${
+                className={`max-w-md px-6 py-4 rounded-3xl text-lg shadow-lg ${
                   msg.senderEmail === currentUserEmail
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-gray-800'
+                    ? 'bg-blue-600 text-white rounded-br-none'
+                    : 'bg-gray-200 text-gray-900 rounded-bl-none'
                 }`}
               >
                 <div>{msg.messageText}</div>
-                <div className="text-[10px] mt-1 text-right opacity-60">
+                <div className="text-[12px] mt-2 text-right opacity-70">
                   {new Date(msg.timestamp).toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -88,18 +103,19 @@ export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Message Input */}
-        <div className="flex items-center border-t px-4 py-3 gap-3 bg-white">
+        {/* Input */}
+        <div className="flex items-center gap-4 border-t px-8 py-5 bg-white">
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="flex-grow px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+            className="flex-grow px-6 py-4 text-lg border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
           <button
             onClick={handleSend}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-medium transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-full font-semibold transition"
           >
             Send
           </button>
