@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function LandingPage() {
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const features = [
     {
@@ -57,20 +57,21 @@ export default function LandingPage() {
             Freelance<span className="text-black">Connect</span>
           </h1>
 
-          <Link to='/role'>
-          <button
-            onClick={() => navigate('/signup')}
-            className="bg-green-700 text-white px-5 py-2 rounded-full hover:bg-green-600 transition"
-          >
-            Get Started
-          </button>
-          </Link>
+          <div className="flex items-center space-x-6">
+            <Link to="/about" className="text-gray-800 hover:text-green-700 text-xl">About</Link>
+            <Link to="/contect" className="text-gray-800 hover:text-green-700 text-xl">Contect</Link>
+            <button
+              onClick={() => navigate('/role')}
+              className="bg-green-700 text-white px-5 py-2 rounded-full hover:bg-green-600 transition"
+            >
+              Get Started
+            </button>
+          </div>
         </nav>
       </header>
 
       {/* Hero Section */}
       <section className="flex flex-col-reverse md:flex-row items-center justify-between px-8 md:px-24 py-20 bg-gradient-to-b from-white to-green-50">
-
         {/* Left Content */}
         <div className="md:w-1/2 text-center md:text-left space-y-6">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
@@ -106,8 +107,6 @@ export default function LandingPage() {
             alt="Freelancers working"
             className="rounded-2xl shadow-lg w-full"
           />
-
-          {/* Floating Badge */}
           <div className="absolute top-4 right-4 bg-white shadow-md rounded-full px-4 py-2 text-sm flex items-center gap-2">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-gray-700 font-medium">New project posted</span>
@@ -119,9 +118,8 @@ export default function LandingPage() {
       <section className="px-6 md:px-20 py-20 bg-white">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            Why Choose <span className="text-green-600">FreelanceHub</span>?
+            Why Choose <span className="text-green-600">FreelanceConnect</span>?
           </h2>
-
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
             Experience the future of freelancing with our comprehensive platform designed for success.
           </p>
@@ -133,10 +131,7 @@ export default function LandingPage() {
               key={index}
               className="p-6 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition"
             >
-              <div className="text-green-600 text-3xl mb-4" role="img" aria-label="icon">
-                {item.icon}
-              </div>
-
+              <div className="text-green-600 text-3xl mb-4">{item.icon}</div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.title}</h3>
               <p className="text-gray-600 text-sm">{item.desc}</p>
             </div>
@@ -145,68 +140,62 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-   
-        <footer className="bg-green-100 text-black px-6 md:px-20 py-10 mt-16">
-  <div className="flex flex-col md:flex-row justify-between gap-10">
+      <footer className="bg-green-100 text-black px-6 md:px-20 py-10 mt-16">
+        <div className="flex flex-col md:flex-row justify-between gap-10">
+          {/* Brand Info */}
+          <div>
+            <h2 className="text-2xl font-bold text-black mb-3">
+              Freelance<span className="text-green-600">Connect</span>
+            </h2>
+            <p className="text-sm text-gray-700 max-w-sm">
+              Empowering freelancers and clients to build, grow, and succeed together.
+            </p>
+          </div>
 
-    {/* Brand Info */}
-    <div>
-      <h2 className="text-2xl font-bold text-black mb-3">
-        Freelance<span className="text-green-600">Connect</span>
-      </h2>
-      <p className="text-sm text-gray-700 max-w-sm">
-        Empowering freelancers and clients to build, grow, and succeed together.
-      </p>
-    </div>
+          {/* Link Groups */}
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+            <div>
+              <h3 className="text-black font-semibold mb-2">Quick Links</h3>
+              <ul className="space-y-1 text-sm">
+                <li><Link to="/about" className="hover:text-green-700">About</Link></li>
+                <li><Link to="/contact" className="hover:text-green-700">Contact</Link></li>
+              </ul>
+            </div>
 
-    {/* Link Groups */}
-    <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-      <div>
-        <h3 className="text-black font-semibold mb-2">Quick Links</h3>
-        <ul className="space-y-1 text-sm">
-          <li><Link to="/" className="hover:text-green-700">Home</Link></li>
-          <li><Link to="/about" className="hover:text-green-700">About</Link></li>
-          <li><Link to="/projects" className="hover:text-green-700">Projects</Link></li>
-          <li><Link to="/contact" className="hover:text-green-700">Contact</Link></li>
-        </ul>
-      </div>
+            <div>
+              <h3 className="text-black font-semibold mb-2">Services</h3>
+              <ul className="space-y-1 text-sm">
+                <li><Link to="/hire" className="hover:text-green-700">Hire Talent</Link></li>
+                <li><Link to="/post-job" className="hover:text-green-700">Post a Job</Link></li>
+                <li><Link to="/freelancers" className="hover:text-green-700">Find Freelancers</Link></li>
+              </ul>
+            </div>
 
-      <div>
-        <h3 className="text-black font-semibold mb-2">Services</h3>
-        <ul className="space-y-1 text-sm">
-          <li><Link to="/hire" className="hover:text-green-700">Hire Talent</Link></li>
-          <li><Link to="/post-job" className="hover:text-green-700">Post a Job</Link></li>
-          <li><Link to="/freelancers" className="hover:text-green-700">Find Freelancers</Link></li>
-        </ul>
-      </div>
+            <div>
+              <h3 className="text-black font-semibold mb-2">Support</h3>
+              <ul className="space-y-1 text-sm">
+                <li><Link to="/help" className="hover:text-green-700">Help Center</Link></li>
+                <li><Link to="/terms" className="hover:text-green-700">Terms of Use</Link></li>
+                <li><Link to="/privacy" className="hover:text-green-700">Privacy Policy</Link></li>
+              </ul>
+            </div>
 
-      <div>
-        <h3 className="text-black font-semibold mb-2">Support</h3>
-        <ul className="space-y-1 text-sm">
-          <li><Link to="/help" className="hover:text-green-700">Help Center</Link></li>
-          <li><Link to="/terms" className="hover:text-green-700">Terms of Use</Link></li>
-          <li><Link to="/privacy" className="hover:text-green-700">Privacy Policy</Link></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-black font-semibold mb-2">Follow Us</h3>
-        <div className="flex space-x-4 text-lg mt-1">
-          <span className="hover:text-green-700 cursor-pointer">🌐</span>
-          <span className="hover:text-green-700 cursor-pointer">🐦</span>
-          <span className="hover:text-green-700 cursor-pointer">📘</span>
-          <span className="hover:text-green-700 cursor-pointer">📸</span>
+            <div>
+              <h3 className="text-black font-semibold mb-2">Follow Us</h3>
+              <div className="flex space-x-4 text-lg mt-1">
+                <span className="hover:text-green-700 cursor-pointer">🌐</span>
+                <span className="hover:text-green-700 cursor-pointer">🐦</span>
+                <span className="hover:text-green-700 cursor-pointer">📘</span>
+                <span className="hover:text-green-700 cursor-pointer">📸</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div className="border-t border-gray-400 mt-8 pt-4 text-center text-sm text-gray-700">
-    &copy; {new Date().getFullYear()} FreelanceConnect. All rights reserved.
-  </div>
-</footer>
-
-
+        <div className="border-t border-gray-400 mt-8 pt-4 text-center text-sm text-gray-700">
+          &copy; {new Date().getFullYear()} FreelanceConnect. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }

@@ -39,7 +39,7 @@ const messageRoutes = require('./Routers/MessageRouter');
 app.use('/api/messages', messageRoutes);
 
 const projectRoutes = require('./Routers/ProjectRouter');
-app.use('/api/project', projectRoutes);
+app.use('/api/projects', projectRoutes);
 
 
 

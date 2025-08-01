@@ -15,6 +15,8 @@ import Chat from './Components/Chating/Chat';
 import ChatComponent from './Components/Chating/ChatComponent';
 import ClientsList from './Components/Client/ClientsList';
 import ClientProject from './Components/Client/ClientProjects';
+import About from './Components/Home/About';
+import Contact from './Components/Home/Contact';
 
 export default function App() {
   return (
@@ -32,6 +34,8 @@ export default function App() {
       <Route path='/chat' element={<Chat/>}/>
       <Route path='/clients' element={<ClientsList/>}/>
       <Route path='/client/project-request' element={<ClientProject/>}/>
+      <Route path='/about' element={<About/>}/>
+      <Route path='/contact' element={<Contact/>}/>
     </Routes>
   );
 }
