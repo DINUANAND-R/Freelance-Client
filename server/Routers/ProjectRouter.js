@@ -70,4 +70,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// GET projects by client email
+router.get('/client/:email', async (req, res) => {
+  try {
+    const projects = await Project.find({ clientEmail: req.params.email });
+    res.status(200).json(projects);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch client projects' });
+  }
+});
+
+
 module.exports = router;

@@ -15,7 +15,7 @@ export default function AllProjects({ freelancerEmail }) {
 
   const sendRequest = async (projectId) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/project-requests/send', {
+      const res = await axios.post('http://localhost:9000/api/project-requests/send', {
         projectId,
         freelancerEmail,
         proposalMessage: 'I am interested in this project.'

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import { FaUserFriends, FaPlusCircle, FaCog, FaGithub, FaLinkedin } from 'react-icons/fa';
 
 export default function ClientDashboard() {
@@ -7,6 +8,16 @@ export default function ClientDashboard() {
   const location = useLocation();
   const { client } = location.state || {};
   const { name, email } = client || {};
+
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    if (email) {
+      axios.get(`http://localhost:9000/api/projects/client/${email}`)
+        .then(res => setProjects(res.data))
+        .catch(err => console.error("Failed to fetch projects:", err));
+    }
+  }, [email]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 to-green-100 text-gray-800 font-sans">
@@ -37,7 +48,7 @@ export default function ClientDashboard() {
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-5xl mx-auto mb-16">
           <div
-            onClick={() => navigate('/client/project-request',{state:{email,name}})}
+            onClick={() => navigate('/client/project-request', { state: { email, name } })}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaPlusCircle className="text-green-600 text-3xl mb-3 group-hover:scale-110 transition" />
@@ -63,9 +74,35 @@ export default function ClientDashboard() {
             <p className="text-gray-600 text-sm">Edit your profile, preferences, and account details.</p>
           </div>
         </div>
+
+        {/* 👉 Projects Section */}
+        <div className="max-w-6xl mx-auto mt-10 text-left">
+          <h3 className="text-2xl font-bold text-green-800 mb-4">Your Posted Projects</h3>
+          {projects.length === 0 ? (
+            <p className="text-gray-600">You haven’t posted any projects yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {projects.map((project, index) => (
+                <div key={index} className="bg-white rounded-xl shadow p-5">
+                  <h4 className="text-xl font-semibold text-green-700 mb-1">{project.title}</h4>
+                  <p className="text-sm text-gray-600 mb-2">Budget: ₹{project.budget}</p>
+                  <p className="text-sm text-gray-600 mb-2">status: {project.status}</p>
+                   <p className="text-sm text-gray-600">   Deadline: {new Date(project.timeline.deadline).toLocaleDateString('en-IN', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+    })}
+  </p>
+
+
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
 
-      <footer className="bg-white text-center py-6 shadow-inner">
+      <footer className="bg-green-300 text-center py-6 shadow-inner">
         <div className="flex justify-center space-x-6 mb-2">
           <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-green-700">
             <FaGithub size={20} />
