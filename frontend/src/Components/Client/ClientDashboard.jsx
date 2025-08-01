@@ -37,7 +37,7 @@ export default function ClientDashboard() {
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-5xl mx-auto mb-16">
           <div
-            onClick={() => navigate('/client/project-request',{state:{name,email}})}
+            onClick={() => navigate('/client/project-request',{state:{email,name}})}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaPlusCircle className="text-green-600 text-3xl mb-3 group-hover:scale-110 transition" />

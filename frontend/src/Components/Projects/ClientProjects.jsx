@@ -8,9 +8,10 @@ export default function ClientPostProject() {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const location = useLocation();
-  const { email } = location.state || {};
+  const { email,name } = location.state || {};
 
   const [formData, setFormData] = useState({
+    clientName: name || '',
     clientEmail: email || '',
     title: '',
     description: '',

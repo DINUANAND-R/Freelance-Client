@@ -14,9 +14,10 @@ import LandingPage from './Components/Home/LandingPage';
 import Chat from './Components/Chating/Chat';
 import ChatComponent from './Components/Chating/ChatComponent';
 import ClientsList from './Components/Client/ClientsList';
-import ClientProject from './Components/Client/ClientProjects';
+import ClientProject from './Components/Projects/ClientProjects';
 import About from './Components/Home/About';
 import Contact from './Components/Home/Contact';
+import AllProjects from './Components/Projects/AllProjects';
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
       <Route path='/client/project-request' element={<ClientProject/>}/>
       <Route path='/about' element={<About/>}/>
       <Route path='/contact' element={<Contact/>}/>
+      <Route path='/allProjects' element={<AllProjects/>}/>
     </Routes>
   );
 }
