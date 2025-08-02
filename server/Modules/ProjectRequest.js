@@ -2,6 +2,10 @@
 const mongoose = require('mongoose');
 
 const projectRequestSchema = new mongoose.Schema({
+  freelancerName: {
+    type: String,
+    required: true,
+  },
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
@@ -26,7 +30,12 @@ const projectRequestSchema = new mongoose.Schema({
   projectTitle:{
     type: String,
     required: true,
-  }
+  },
+   status: {
+    type: String,
+    enum: ['pending', 'accepted', 'denied'],
+    default: 'pending',
+  },
 });
 
 module.exports = mongoose.model('ProjectRequest', projectRequestSchema);

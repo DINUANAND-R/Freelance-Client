@@ -26,7 +26,7 @@ export default function ClientDashboard() {
           <h1 className="text-2xl font-extrabold text-green-700">FreelanceHub</h1>
           <nav className="space-x-6 hidden md:flex">
             <button onClick={() => navigate('/freelancers', { state: { name, email } })} className="hover:text-green-600 font-medium">Find Freelancers</button>
-            <button onClick={() => navigate('/my-projects')} className="hover:text-green-600 font-medium">My Projects</button>
+            <button onClick={() => navigate('/client/myProjects',{state : {name,email}})} className="hover:text-green-600 font-medium">My Projects</button>
             <button onClick={() => navigate('/settings')} className="hover:text-green-600 font-medium">Settings</button>
             <button
               onClick={() => navigate('/')}

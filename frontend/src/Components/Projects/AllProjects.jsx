@@ -4,9 +4,11 @@ import { useLocation } from 'react-router-dom';
 
 export default function AllProjects() {
   const [projects, setProjects] = useState([]);
+  const [proposalMessages, setProposalMessages] = useState({});
   const [requestStatus, setRequestStatus] = useState(null);
   const location = useLocation();
-  const freelancerEmail = location.state?.email;
+  const { email: freelancerEmail,name: freelancerName } = location.state || {};
+
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -22,14 +24,12 @@ export default function AllProjects() {
   }, []);
 
   const handleSendRequest = async (project) => {
-    const projectId = project._id;
-    const projectTitle=project.title;
-    const clientEmail = project.clientEmail;
-    const proposalMessage = 'I’m interested in this project.';
+    const { _id: projectId, title: projectTitle, clientEmail } = project;
+    const proposalMessage = proposalMessages[projectId] || '';
 
-    if (!projectId || !freelancerEmail || !clientEmail) {
-      console.error('❌ Missing required data:', { projectId, freelancerEmail, clientEmail });
-      setRequestStatus({ success: false, message: 'Missing required data' });
+    if (!projectId || !freelancerEmail || !clientEmail || !proposalMessage.trim()) {
+      console.error('❌ Missing required data:', { projectId, freelancerEmail, clientEmail, proposalMessage });
+      setRequestStatus({ success: false, message: 'Please enter a proposal message.' });
       return;
     }
 
@@ -40,9 +40,11 @@ export default function AllProjects() {
         freelancerEmail,
         clientEmail,
         proposalMessage,
+        freelancerName
       });
 
       setRequestStatus({ success: true, message: res.data.message });
+      setProposalMessages((prev) => ({ ...prev, [projectId]: '' })); // Clear message after success
     } catch (error) {
       console.error('❌ Request failed:', error.response?.data || error.message);
       setRequestStatus({
@@ -50,6 +52,10 @@ export default function AllProjects() {
         message: error.response?.data?.error || 'Something went wrong',
       });
     }
+  };
+
+  const handleProposalChange = (projectId, value) => {
+    setProposalMessages((prev) => ({ ...prev, [projectId]: value }));
   };
 
   return (
@@ -78,11 +84,22 @@ export default function AllProjects() {
               <h2 className="text-xl font-bold">{project.title}</h2>
               <p className="text-gray-700 mt-1">{project.description}</p>
               <p className="mt-2 text-sm text-gray-500">
-                Skills: {project.skills?.join(', ')}
+                  Skills: {project.skills?.length > 0 ? project.skills.join(', ') : 'Not specified'}
               </p>
+              <p className="text-sm text-gray-500">
+                  Deadline: {project.timeline?.deadline ? new Date(project.timeline.deadline).toLocaleDateString() : 'Not specified'}
+              </p>
+
               <p className="text-sm text-gray-500">Budget: ₹{project.budget}</p>
-              <p className="text-sm text-gray-500">Deadline: {project.deadline}</p>
               <p className="text-sm text-gray-500">Client: {project.clientEmail}</p>
+
+              <textarea
+                rows={3}
+                className="w-full mt-3 p-2 border border-gray-300 rounded"
+                placeholder="Write your proposal message..."
+                value={proposalMessages[project._id] || ''}
+                onChange={(e) => handleProposalChange(project._id, e.target.value)}
+              />
 
               <button
                 onClick={() => handleSendRequest(project)}
