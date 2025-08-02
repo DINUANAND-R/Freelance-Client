@@ -41,7 +41,8 @@ app.use('/api/messages', messageRoutes);
 const projectRoutes = require('./Routers/ProjectRouter');
 app.use('/api/projects', projectRoutes);
 
-
+const projectRequestRouter = require('./Routers/ProjectRequestRouter');
+app.use('/api/project-requests',projectRequestRouter);
 
 // Socket.IO real-time messaging
 io.on('connection', (socket) => {

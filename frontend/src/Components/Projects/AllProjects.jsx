@@ -1,92 +1,97 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ChevronDown, ChevronUp } from 'lucide-react'; // Optional: for expand icon
+import { useLocation } from 'react-router-dom';
 
-export default function AllProjects({ freelancerEmail }) {
+export default function AllProjects() {
   const [projects, setProjects] = useState([]);
   const [requestStatus, setRequestStatus] = useState(null);
-  const [expandedProjectId, setExpandedProjectId] = useState(null);
+  const location = useLocation();
+  const freelancerEmail = location.state?.email;
 
   useEffect(() => {
-    axios.get('http://localhost:9000/api/projects/all')
-      .then(res => setProjects(res.data))
-      .catch(err => console.error('❌ Error fetching projects:', err));
+    const fetchProjects = async () => {
+      try {
+        const res = await axios.get('http://localhost:9000/api/projects/all');
+        setProjects(res.data);
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+      }
+    };
+
+    fetchProjects();
   }, []);
 
-  const sendRequest = async (projectId) => {
+  const handleSendRequest = async (project) => {
+    const projectId = project._id;
+    const projectTitle=project.title;
+    const clientEmail = project.clientEmail;
+    const proposalMessage = 'I’m interested in this project.';
+
+    if (!projectId || !freelancerEmail || !clientEmail) {
+      console.error('❌ Missing required data:', { projectId, freelancerEmail, clientEmail });
+      setRequestStatus({ success: false, message: 'Missing required data' });
+      return;
+    }
+
     try {
       const res = await axios.post('http://localhost:9000/api/project-requests/send', {
+        projectTitle,
         projectId,
         freelancerEmail,
-        proposalMessage: 'I am interested in this project.'
+        clientEmail,
+        proposalMessage,
       });
+
       setRequestStatus({ success: true, message: res.data.message });
     } catch (error) {
-      setRequestStatus({ success: false, message: error.response?.data?.error || 'Request failed' });
+      console.error('❌ Request failed:', error.response?.data || error.message);
+      setRequestStatus({
+        success: false,
+        message: error.response?.data?.error || 'Something went wrong',
+      });
     }
   };
 
-  const toggleExpand = (id) => {
-    setExpandedProjectId(prev => (prev === id ? null : id));
-  };
-
   return (
-    <div className="min-h-screen px-6 py-8 bg-gray-100 font-sans">
-      <button
-        className="mb-6 text-sm text-blue-600 hover:underline"
-        onClick={() => window.history.back()}
-      >
-        ← Back
-      </button>
-
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Explore Available Projects</h2>
-
-      {projects.filter(p => p.status === 'pending').map(project => (
-        <div
-          key={project._id}
-          className="bg-white shadow-md rounded-lg p-6 mb-5 transition duration-200 hover:shadow-lg cursor-pointer"
-          onClick={() => toggleExpand(project._id)}
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800">{project.title}</h3>
-              <p className="text-gray-600"><strong>Client:</strong> {project.clientName}</p>
-              <p className="text-gray-600"><strong>Budget:</strong> ₹{project.budget}</p>
-              <p className="text-gray-600"><strong>Deadline:</strong> {new Date(project.timeline.deadline).toLocaleDateString()}</p>
-            </div>
-            <div className="text-gray-500">
-              {expandedProjectId === project._id ? <ChevronUp /> : <ChevronDown />}
-            </div>
-          </div>
-
-          {expandedProjectId === project._id && (
-            <div className="mt-4 border-t pt-4 text-gray-700 space-y-2">
-              <p><strong>Description:</strong> {project.description}</p>
-              <p><strong>Deliverables:</strong> {project.deliverables}</p>
-              <p><strong>References:</strong> {project.references || 'N/A'}</p>
-              <p><strong>NDA Required:</strong> {project.ndaRequired ? 'Yes' : 'No'}</p>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  sendRequest(project._id);
-                }}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow-sm transition"
-              >
-                Send Request
-              </button>
-            </div>
-          )}
-        </div>
-      ))}
+    <div className="p-4 bg-gray-50 min-h-screen">
+      <h1 className="text-2xl font-semibold mb-4">All Projects</h1>
 
       {requestStatus && (
         <div
-          className={`mt-4 p-4 rounded-md ${
+          className={`p-3 rounded mb-4 ${
             requestStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
           }`}
         >
           {requestStatus.message}
+        </div>
+      )}
+
+      {projects.length === 0 ? (
+        <p>No projects found.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <div
+              key={project._id}
+              className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+            >
+              <h2 className="text-xl font-bold">{project.title}</h2>
+              <p className="text-gray-700 mt-1">{project.description}</p>
+              <p className="mt-2 text-sm text-gray-500">
+                Skills: {project.skills?.join(', ')}
+              </p>
+              <p className="text-sm text-gray-500">Budget: ₹{project.budget}</p>
+              <p className="text-sm text-gray-500">Deadline: {project.deadline}</p>
+              <p className="text-sm text-gray-500">Client: {project.clientEmail}</p>
+
+              <button
+                onClick={() => handleSendRequest(project)}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Send Request
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>

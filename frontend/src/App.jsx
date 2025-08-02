@@ -18,6 +18,7 @@ import ClientProject from './Components/Projects/ClientProjects';
 import About from './Components/Home/About';
 import Contact from './Components/Home/Contact';
 import AllProjects from './Components/Projects/AllProjects';
+import ClientRequestPage from './Components/Projects/ClientRequestPage';
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
       <Route path='/about' element={<About/>}/>
       <Route path='/contact' element={<Contact/>}/>
       <Route path='/allProjects' element={<AllProjects/>}/>
+      <Route path='/requesrForClient' element={<ClientRequestPage/>}/>
     </Routes>
   );
 }

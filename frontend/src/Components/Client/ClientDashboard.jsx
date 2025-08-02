@@ -66,11 +66,11 @@ export default function ClientDashboard() {
           </div>
 
           <div
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate('/requesrForClient',{state:{email,name}})}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaCog className="text-green-600 text-3xl mb-3 group-hover:rotate-90 transition" />
-            <h4 className="text-xl font-semibold text-green-800 mb-2">Manage Settings</h4>
+            <h4 className="text-xl font-semibold text-green-800 mb-2">Requests</h4>
             <p className="text-gray-600 text-sm">Edit your profile, preferences, and account details.</p>
           </div>
         </div>

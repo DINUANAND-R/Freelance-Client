@@ -44,11 +44,11 @@ export default function FreelancerDashboard() {
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-5xl mx-auto mb-16">
           <div
-            onClick={() => navigate('/my-projects', { state: { email } })}
+            onClick={() => navigate('/allprojects', { state: { name,email } })}
             className="bg-white shadow-md rounded-2xl p-6 cursor-pointer hover:shadow-xl transition group"
           >
             <FaProjectDiagram className="text-green-600 text-3xl mb-3 group-hover:scale-110 transition" />
-            <h4 className="text-xl font-semibold text-green-800 mb-2">My Projects</h4>
+            <h4 className="text-xl font-semibold text-green-800 mb-2">Projects</h4>
             <p className="text-gray-600 text-sm">View your ongoing and completed projects.</p>
           </div>
 
