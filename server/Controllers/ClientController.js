@@ -1,4 +1,3 @@
-
 // ✅ Controllers/ClientController.js
 const Client = require('../Modules/ClientModule');
 const bcrypt = require('bcryptjs');
@@ -21,6 +20,7 @@ exports.registerClient = async (req, res) => {
       password: hashedPassword,
       linkedin,
       photo,
+      loginHistory: [] // initialize with empty
     });
 
     await client.save();
@@ -40,6 +40,10 @@ exports.loginClient = async (req, res) => {
     const isMatch = await bcrypt.compare(password, client.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
+    // 👉 Add login timestamp to loginHistory
+    client.loginHistory.push(new Date());
+    await client.save();
+
     const token = jwt.sign(
       { id: client._id, email: client.email },
       process.env.JWT_SECRET,
@@ -58,7 +62,6 @@ exports.loginClient = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
 
 exports.getClientProfile = async (req, res) => {
   const { email } = req.params;

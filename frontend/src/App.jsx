@@ -24,6 +24,7 @@ import AdminDashboard from './Components/Admin/AdminDashboard';
 import AdminFreelancerControl from './Components/Admin/AdminFreelancerControl';
 import ClientProfile from './Components/Client/ClientProfile';
 import FreelancerProfile from './Components/Freelancer/FreelanceProfile';
+import RecentChats from './Components/Chating/RecentChats';
 
 export default function App() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
       <Route path='/admin/client/control' element={<AdminFreelancerControl/>}/>
       <Route path='/client/profile' element={<ClientProfile/>}/>
       <Route path='/freelancer/profile' element={<FreelancerProfile/>}/>
+      <Route path='/chat/recent' element={<RecentChats  currentUserEmail='dinuanandcr.23cse@kongu.edu'/>}/>
     </Routes>
   );
 }

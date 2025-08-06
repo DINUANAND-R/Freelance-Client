@@ -27,7 +27,6 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
 // Routes
 const clientRoutes = require('./Routers/ClientRouter');
 app.use('/api/client', clientRoutes);
@@ -42,13 +41,13 @@ const projectRoutes = require('./Routers/ProjectRouter');
 app.use('/api/projects', projectRoutes);
 
 const projectRequestRouter = require('./Routers/ProjectRequestRouter');
-app.use('/api/project-requests',projectRequestRouter);
+app.use('/api/project-requests', projectRequestRouter);
 
-const adminRouter=require('./Routers/AdminRouter');
-app.use('/api/admin',adminRouter);
+const adminRouter = require('./Routers/AdminRouter');
+app.use('/api/admin', adminRouter);
 
-const adminLogin=require('./Routers/AdminLoginRouter');
-app.use('/admin',adminLogin);
+const adminLogin = require('./Routers/AdminLoginRouter');
+app.use('/admin', adminLogin);
 
 // Socket.IO real-time messaging
 io.on('connection', (socket) => {
@@ -60,6 +59,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async ({ senderEmail, receiverEmail, messageText }) => {
+    // Prevent sending empty messages or invalid data
+    if (!senderEmail || !receiverEmail || !messageText?.trim()) {
+      console.warn('⚠️ Skipping empty or malformed message');
+      return;
+    }
+
     try {
       const newMessage = new Message({ senderEmail, receiverEmail, messageText });
       await newMessage.save();
@@ -81,12 +86,12 @@ mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => {
-  console.log('✅ MongoDB Connected');
-  server.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  .then(() => {
+    console.log('✅ MongoDB Connected');
+    server.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err.message);
   });
-})
-.catch((err) => {
-  console.error('❌ MongoDB connection error:', err.message);
-});

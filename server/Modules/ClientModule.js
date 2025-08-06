@@ -8,6 +8,7 @@ const clientSchema = new mongoose.Schema({
   password: { type: String, required: true },
   linkedin: { type: String },
   photo: { type: String },
+  loginHistory: [Date],
   role: { type: String, default: 'Client' } // ✅ Added role with default
 }, { timestamps: true });
 

@@ -1,8 +1,9 @@
+// routes/messageRoutes.js
 const express = require('express');
 const router = express.Router();
 const Message = require('../Modules/Message');
 
-// Save a new message
+// Send a new message
 router.post('/send', async (req, res) => {
   const { senderEmail, receiverEmail, messageText } = req.body;
   if (!senderEmail || !receiverEmail || !messageText) {
@@ -18,7 +19,6 @@ router.post('/send', async (req, res) => {
     res.status(500).json({ error: 'Failed to send message' });
   }
 });
-
 
 // Get all messages between two users
 router.get('/:user1/:user2', async (req, res) => {
