@@ -19,7 +19,8 @@ export default function ClientLogin() {
       );
       console.log('✅ Login successful:', res.data);
       navigate('/client/dashboard', {
-        state: { client: res.data.client },
+        state: { name:res.data.client.name,
+          email: res.data.client.email },
       });
     } catch (err) {
       console.error('❌ Login error:', err.response?.data?.message || err.message);

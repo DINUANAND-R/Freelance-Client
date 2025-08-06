@@ -6,6 +6,7 @@ const multer = require('multer');
 const {
   registerClient,
   loginClient,
+  getClientProfile
 } = require('../Controllers/ClientController');
 
 const storage = multer.diskStorage({
@@ -25,5 +26,6 @@ router.get('/all', async (req, res) => {
 
 router.post('/register', upload.single('photo'), registerClient);
 router.post('/login', loginClient);
+router.get('/profile/:email', getClientProfile);
 
 module.exports = router;

@@ -6,8 +6,8 @@ import { FaUserFriends, FaPlusCircle, FaCog, FaGithub, FaLinkedin } from 'react-
 export default function ClientDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { client } = location.state || {};
-  const { name, email } = client || {};
+  const { name, email } =location.state || JSON.parse(localStorage.getItem('client')) || {};
+
 
   const [projects, setProjects] = useState([]);
 
@@ -27,7 +27,7 @@ export default function ClientDashboard() {
           <nav className="space-x-6 hidden md:flex">
             <button onClick={() => navigate('/freelancers', { state: { name, email } })} className="hover:text-green-600 font-medium">Find Freelancers</button>
             <button onClick={() => navigate('/client/myProjects',{state : {name,email}})} className="hover:text-green-600 font-medium">My Projects</button>
-            <button onClick={() => navigate('/settings')} className="hover:text-green-600 font-medium">Settings</button>
+            <button onClick={() => navigate('/client/profile', { state: { email:email } })} className="hover:text-green-600 font-medium">profile</button>
             <button
               onClick={() => navigate('/')}
               className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"

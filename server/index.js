@@ -44,6 +44,12 @@ app.use('/api/projects', projectRoutes);
 const projectRequestRouter = require('./Routers/ProjectRequestRouter');
 app.use('/api/project-requests',projectRequestRouter);
 
+const adminRouter=require('./Routers/AdminRouter');
+app.use('/api/admin',adminRouter);
+
+const adminLogin=require('./Routers/AdminLoginRouter');
+app.use('/admin',adminLogin);
+
 // Socket.IO real-time messaging
 io.on('connection', (socket) => {
   console.log('📡 New user connected:', socket.id);

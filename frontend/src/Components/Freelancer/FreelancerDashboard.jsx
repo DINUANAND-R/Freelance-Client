@@ -22,7 +22,7 @@ export default function FreelancerDashboard() {
           <nav className="space-x-6 hidden md:flex">
             <button onClick={() => navigate('/clients', { state: { name, email } })} className="hover:text-green-600 font-medium">Clients</button>
             <button onClick={() => navigate('/messages')} className="hover:text-green-600 font-medium">Messages</button>
-            <button onClick={() => navigate('/settings')} className="hover:text-green-600 font-medium">Settings</button>
+            <button onClick={() => navigate('/freelancer/profile', { state: {email}})} className="hover:text-green-600 font-medium">Profile</button>
             <button
               onClick={() => navigate('/')}
               className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"

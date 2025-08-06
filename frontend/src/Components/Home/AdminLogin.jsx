@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -8,16 +9,30 @@ export default function AdminLogin() {
     password: '',
   });
 
+  const [error, setError] = useState('');
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Admin Login:', formData);
-    // Make API call here
-    navigate('/admin/dashboard');
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:9000/admin/login', formData);
+      const { token, message } = response.data;
+
+      // Optionally store token in localStorage
+      localStorage.setItem('adminToken', token);
+
+      console.log(message);
+      navigate('/admin/dashboard');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || 'Login failed');
+    }
   };
 
   return (
@@ -33,6 +48,10 @@ export default function AdminLogin() {
       {/* Card */}
       <div className="bg-white shadow-2xl rounded-3xl px-8 py-10 max-w-md w-full animate-fade-in">
         <h2 className="text-3xl font-bold text-green-700 text-center mb-6">Admin Login</h2>
+
+        {error && (
+          <div className="text-red-600 text-sm mb-4 text-center">{error}</div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}

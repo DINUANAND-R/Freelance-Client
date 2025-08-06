@@ -89,6 +89,21 @@ router.get('/all', async (req, res) => {
   }
 });
 
+router.get('/profile/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
+    const freelancer = await Freelancer.findOne({ email });
+
+    if (!freelancer) {
+      return res.status(404).json({ message: 'Freelancer not found' });
+    }
+
+    res.json(freelancer);
+  } catch (error) {
+    console.error('Error fetching freelancer profile:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 
 module.exports = router;

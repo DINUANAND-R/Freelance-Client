@@ -20,6 +20,10 @@ import Contact from './Components/Home/Contact';
 import AllProjects from './Components/Projects/AllProjects';
 import ClientRequestPage from './Components/Projects/ClientRequestPage';
 import MyProjectsForClients from './Components/Projects/MyProjectsForClients';
+import AdminDashboard from './Components/Admin/AdminDashboard';
+import AdminFreelancerControl from './Components/Admin/AdminFreelancerControl';
+import ClientProfile from './Components/Client/ClientProfile';
+import FreelancerProfile from './Components/Freelancer/FreelanceProfile';
 
 export default function App() {
   return (
@@ -42,6 +46,11 @@ export default function App() {
       <Route path='/allProjects' element={<AllProjects/>}/>
       <Route path='/requesrForClient' element={<ClientRequestPage/>}/>
       <Route path='/client/myProjects' element={<MyProjectsForClients/>}/>
+      <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
+      <Route path='/admin/freelancer/control' element={<AdminFreelancerControl/>}/>
+      <Route path='/admin/client/control' element={<AdminFreelancerControl/>}/>
+      <Route path='/client/profile' element={<ClientProfile/>}/>
+      <Route path='/freelancer/profile' element={<FreelancerProfile/>}/>
     </Routes>
   );
 }

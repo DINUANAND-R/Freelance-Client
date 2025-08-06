@@ -59,7 +59,7 @@ export default function LandingPage() {
 
           <div className="flex items-center space-x-6">
             <Link to="/about" className="text-gray-800 hover:text-green-700 text-xl">About</Link>
-            <Link to="/contect" className="text-gray-800 hover:text-green-700 text-xl">Contect</Link>
+            <Link to="/contact" className="text-gray-800 hover:text-green-700 text-xl">Contact</Link>
             <button
               onClick={() => navigate('/role')}
               className="bg-green-700 text-white px-5 py-2 rounded-full hover:bg-green-600 transition"
