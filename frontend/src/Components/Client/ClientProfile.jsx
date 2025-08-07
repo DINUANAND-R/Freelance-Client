@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   format,
   subMonths,
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,
-  isSameDay
+  isSameDay,
 } from 'date-fns';
-import { FaLinkedin, FaArrowLeft } from 'react-icons/fa';
+import { FaLinkedin, FaArrowLeft, FaCheckCircle, FaHourglassHalf, FaClipboardList, FaProjectDiagram, FaHistory } from 'react-icons/fa';
 
 const ClientProfile = () => {
   const location = useLocation();
@@ -18,10 +19,22 @@ const ClientProfile = () => {
   const [profile, setProfile] = useState(null);
   const [months, setMonths] = useState([]);
   const [loginDates, setLoginDates] = useState([]);
+  const [projectStats, setProjectStats] = useState({
+    completed: 0,
+    accepted: 0,
+    pending: 0
+  });
+  const [recentProjects, setRecentProjects] = useState([]);
+  const [activityLog, setActivityLog] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!email) {
+      setLoading(false);
+      return;
+    }
+
     const fetchProfile = async () => {
-      if (!email) return;
       try {
         const res = await axios.get(`http://localhost:9000/api/client/profile/${email}`);
         setProfile(res.data);
@@ -31,7 +44,6 @@ const ClientProfile = () => {
     };
 
     const fetchLoginDates = async () => {
-      if (!email) return;
       try {
         const res = await axios.get(`http://localhost:9000/api/client/login-activity/${email}`);
         setLoginDates(res.data.map(date => new Date(date)));
@@ -40,8 +52,42 @@ const ClientProfile = () => {
       }
     };
 
-    fetchProfile();
-    fetchLoginDates();
+    const fetchProjectStats = async () => {
+      try {
+        const res = await axios.get(`http://localhost:9000/api/projects/project-status/${email}`);
+        setProjectStats(res.data);
+      } catch (err) {
+        console.error('Error fetching project status counts:', err);
+      }
+    };
+    
+    // Simulating recent projects data as the API endpoint doesn't exist
+    const fetchRecentProjects = () => {
+      setRecentProjects([
+        { id: 1, title: "Website Redesign", status: "completed", deadline: new Date() },
+        { id: 2, title: "Mobile App Development", status: "accepted", deadline: subMonths(new Date(), -1) },
+        { id: 3, title: "Marketing Campaign", status: "pending", deadline: subMonths(new Date(), -2) }
+      ]);
+    };
+    
+    // Simulating activity log data
+    const fetchActivityLog = () => {
+      setActivityLog([
+        { id: 1, text: "Submitted new project proposal", date: new Date() },
+        { id: 2, text: "Approved invoice #1234", date: subMonths(new Date(), 1) },
+        { id: 3, text: "Updated profile information", date: subMonths(new Date(), 2) }
+      ]);
+    };
+
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchProfile(), fetchLoginDates(), fetchProjectStats()]);
+      fetchRecentProjects();
+      fetchActivityLog();
+      setLoading(false);
+    };
+
+    fetchData();
   }, [email]);
 
   useEffect(() => {
@@ -62,78 +108,230 @@ const ClientProfile = () => {
 
   const isActive = date => loginDates.some(activeDate => isSameDay(date, activeDate));
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+  };
+
+  const cardVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: { scale: 1, opacity: 1, transition: { duration: 0.6 } },
+  };
+
   if (!email) return <div className="text-red-500 text-center mt-6">Email not provided. Cannot load profile.</div>;
-  if (!profile) return <div className="text-center mt-6">Loading profile...</div>;
+  if (loading) return <div className="text-center mt-6 text-gray-500">Loading profile...</div>;
+  if (!profile) return <div className="text-center mt-6 text-red-500">Failed to load profile data.</div>;
 
   return (
-    <div className="min-h-screen bg-white text-green-900 p-6">
-      {/* Back Button */}
-      <div className="max-w-4xl mx-auto mb-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center border border-green-500 text-green-700 px-4 py-2 rounded hover:bg-green-100 transition"
+    <motion.div
+      className="min-h-screen bg-emerald-950 text-gray-100 flex flex-col justify-between font-sans"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <main className="p-8 flex-grow max-w-7xl mx-auto w-full">
+        {/* Back Button */}
+        <motion.div variants={itemVariants} className="mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center text-emerald-300 px-4 py-2 rounded-lg hover:bg-emerald-800 transition-colors"
+          >
+            <FaArrowLeft className="mr-2" />
+            Back to Dashboard
+          </button>
+        </motion.div>
+
+        {/* Profile Section */}
+        <motion.div
+          className="bg-emerald-900 rounded-2xl shadow-xl p-8 border border-emerald-800"
+          variants={itemVariants}
         >
-          <FaArrowLeft className="mr-2" />
-          Back
-        </button>
-      </div>
-
-      {/* Profile Card */}
-      <div className="max-w-4xl mx-auto p-6 border border-green-300 rounded-lg shadow-lg bg-peach-50">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold text-green-700">Client Profile</h1>
-          {profile.linkedin && (
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-green-700 hover:text-green-500"
-            >
-              <FaLinkedin size={30} />
-            </a>
-          )}
-        </div>
-        <div className="flex flex-col items-center">
-          <img
-            src={`http://localhost:9000/${profile.photo}`}
-            alt="Profile"
-            className="w-32 h-32 rounded-full mb-4 object-cover border-4 border-peach"
-          />
-          <p className="text-lg"><strong>Name:</strong> {profile.name}</p>
-          <p className="text-lg"><strong>Email:</strong> {profile.email}</p>
-          <p className="text-lg"><strong>Address:</strong> {profile.address}</p>
-        </div>
-      </div>
-
-      {/* Login Calendar */}
-      <div className="max-w-6xl mx-auto mt-10 p-6 border border-green-300 rounded-lg shadow-lg bg-peach-50">
-        <h2 className="text-2xl font-semibold mb-4 text-center text-green-700">Login Calendar</h2>
-        <div className="flex flex-wrap gap-6 justify-center">
-          {months.map(({ month, days }, idx) => (
-            <div key={idx} className="bg-white border border-green-200 rounded-lg p-4 w-full sm:w-[300px] shadow-md">
-              <h3 className="text-xl font-bold mb-3 text-center text-green-700">{month}</h3>
-              <div className="grid grid-cols-7 gap-1 text-center text-sm">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                  <div key={i} className="font-semibold text-green-600">{day}</div>
-                ))}
-                {days.map((day, i) => (
-                  <div
-                    key={i}
-                    className={`relative h-8 w-8 flex items-center justify-center rounded-md cursor-pointer 
-                      ${isActive(day)
-                        ? 'bg-green-500 text-white'
-                        : 'bg-peach text-green-800 hover:bg-green-100'}`}
-                    title={`${format(day, 'eeee, MMM d')} - ${isActive(day) ? 'Active' : 'Inactive'}`}
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Left Side: Image & Details */}
+            <div className="flex-shrink-0 w-full lg:w-1/3 flex flex-col items-center lg:items-start">
+              <motion.img
+                src={`http://localhost:9000/${profile.photo}`}
+                alt="Profile"
+                className="w-32 h-32 rounded-full mb-4 object-cover border-4 border-emerald-500 shadow-md"
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.6, type: "spring", stiffness: 120 }}
+              />
+              <div className="text-left space-y-3 w-full">
+                <p className="text-xl font-bold text-gray-100">{profile.name}</p>
+                <p className="text-md text-emerald-300 font-medium">
+                  <span className="font-semibold text-gray-100">Email:</span> {profile.email}
+                </p>
+                <p className="text-md text-emerald-300 font-medium">
+                  <span className="font-semibold text-gray-100">Address:</span><br />{profile.address}
+                </p>
+                {profile.linkedin && (
+                  <motion.a
+                    href={profile.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    {format(day, 'd')}
-                  </div>
-                ))}
+                    <FaLinkedin size={24} className="mr-2" />
+                    LinkedIn Profile
+                  </motion.a>
+                )}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
+
+            {/* Right Side: Title, Project Summary */}
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-gray-100 mb-6 lg:mb-4">Client Overview</h1>
+
+              {/* Project Stats */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <motion.div
+                  className="bg-emerald-800 p-6 rounded-lg shadow-inner border-l-4 border-emerald-500"
+                  variants={cardVariants}
+                  whileHover={{ scale: 1.05, rotate: 1, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.2)" }}
+                >
+                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">Projects Completed</h4>
+                  <p className="text-3xl font-bold text-gray-100 flex items-center">
+                    {projectStats.completed}
+                    <FaCheckCircle className="ml-2 text-emerald-500" size={24} />
+                  </p>
+                </motion.div>
+                <motion.div
+                  className="bg-emerald-800 p-6 rounded-lg shadow-inner border-l-4 border-indigo-500"
+                  variants={cardVariants}
+                  whileHover={{ scale: 1.05, rotate: 1, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.2)" }}
+                >
+                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">Projects Accepted</h4>
+                  <p className="text-3xl font-bold text-gray-100 flex items-center">
+                    {projectStats.accepted}
+                    <FaClipboardList className="ml-2 text-indigo-500" size={24} />
+                  </p>
+                </motion.div>
+                <motion.div
+                  className="bg-emerald-800 p-6 rounded-lg shadow-inner border-l-4 border-amber-500"
+                  variants={cardVariants}
+                  whileHover={{ scale: 1.05, rotate: 1, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.2)" }}
+                >
+                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">Projects Pending</h4>
+                  <p className="text-3xl font-bold text-gray-100 flex items-center">
+                    {projectStats.pending}
+                    <FaHourglassHalf className="ml-2 text-amber-500" size={24} />
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+        
+        {/* Recent Projects */}
+        <motion.div
+          className="mt-10"
+          variants={itemVariants}
+        >
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-100">Recent Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence>
+              {recentProjects.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  className="bg-emerald-900 rounded-lg p-6 shadow-md border border-emerald-800"
+                  initial={{ y: 50, opacity: 0, scale: 0.9 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: -50, opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.03, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.2)" }}
+                >
+                  <h3 className="text-lg font-bold text-gray-100 flex items-center mb-2">
+                    <FaProjectDiagram className="mr-2 text-emerald-400" />
+                    {project.title}
+                  </h3>
+                  <p className="text-sm text-emerald-300">
+                    <span className="font-semibold text-gray-100">Status:</span> {project.status}
+                  </p>
+                  <p className="text-sm text-emerald-300">
+                    <span className="font-semibold text-gray-100">Deadline:</span> {format(project.deadline, 'MMM d, yyyy')}
+                  </p>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Login Calendar */}
+        <motion.div
+          className="mt-10"
+          variants={itemVariants}
+        >
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-100">Login Calendar</h2>
+          <div className="flex flex-wrap gap-6 justify-center">
+            {months.map(({ month, days }, idx) => (
+              <div key={idx} className="bg-emerald-900 rounded-lg p-6 shadow-md border border-emerald-800 w-full sm:w-[300px]">
+                <h3 className="text-xl font-bold mb-4 text-center text-gray-100">{month}</h3>
+                <div className="grid grid-cols-7 gap-1 text-center text-sm">
+                  {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                    <div key={i} className="font-semibold text-emerald-300">{day}</div>
+                  ))}
+                  {days.map((day, i) => (
+                    <motion.div
+                      key={i}
+                      className={`relative h-8 w-8 flex items-center justify-center rounded-lg font-medium transition-colors
+                        ${isActive(day) ? 'bg-emerald-600 text-white shadow-lg' : 'bg-transparent text-emerald-300'}`}
+                      title={`${format(day, 'eeee, MMM d')} - ${isActive(day) ? 'Active' : 'Inactive'}`}
+                      whileHover={{ scale: 1.15, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      {format(day, 'd')}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Activity Log */}
+        <motion.div
+          className="mt-10"
+          variants={itemVariants}
+        >
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-100">Recent Activity</h2>
+          <div className="bg-emerald-900 rounded-2xl shadow-xl p-6 border border-emerald-800 max-w-2xl mx-auto">
+            {activityLog.map((activity) => (
+              <motion.div
+                key={activity.id}
+                className="flex items-start mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: activity.id * 0.1 }}
+              >
+                <FaHistory className="text-emerald-400 mt-1 mr-4 flex-shrink-0" size={20} />
+                <div className="flex-grow">
+                  <p className="text-gray-100">{activity.text}</p>
+                  <p className="text-xs text-emerald-400 mt-1">{format(activity.date, 'MMMM d, yyyy')}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </main>
+
+      {/* Footer */}
+      <motion.footer
+        className="bg-emerald-900 text-emerald-300 text-center py-6 mt-10 border-t border-emerald-800"
+        variants={itemVariants}
+      >
+        <p className="text-sm">
+          &copy; {new Date().getFullYear()} Freelance Platform. All rights reserved.
+        </p>
+      </motion.footer>
+    </motion.div>
   );
 };
 

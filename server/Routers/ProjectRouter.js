@@ -80,5 +80,29 @@ router.get('/client/:email', async (req, res) => {
   }
 });
 
+router.get('/project-status/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
 
+    // Find projects linked to client by email (modify based on your DB schema)
+    const projects = await Project.find({ clientEmail: email });
+
+    const counts = {
+      completed: 0,
+      accepted: 0,
+      pending: 0,
+    };
+
+    projects.forEach((project) => {
+      if (project.status === 'Completed') counts.completed++;
+      else if (project.status === 'Accepted') counts.accepted++;
+      else counts.pending++;
+    });
+
+    res.status(200).json(counts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 module.exports = router;

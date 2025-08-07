@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaArrowLeft, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 export default function MyProjectsForClients() {
   const [projects, setProjects] = useState([]);
   const [expandedProjectId, setExpandedProjectId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const { name, email } = location.state || {};
 
   useEffect(() => {
     if (email) {
+      setLoading(true);
       axios.get(`http://localhost:9000/api/projects/client/${email}`)
-        .then(res => setProjects(res.data))
-        .catch(err => console.error('Error fetching projects:', err));
+        .then(res => {
+          setProjects(res.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching projects:', err);
+          setLoading(false);
+        });
     }
   }, [email]);
 
@@ -21,51 +31,116 @@ export default function MyProjectsForClients() {
     setExpandedProjectId(prev => (prev === id ? null : id));
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 50, opacity: 0, rotate: -5 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    },
+  };
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        ← Back
-      </button>
+    <motion.div
+      className="p-8 bg-emerald-50 min-h-screen font-sans text-gray-800"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Back Button */}
+      <motion.div variants={itemVariants} className="w-full max-w-4xl mx-auto mb-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-emerald-700 font-medium hover:text-emerald-500 transition-colors"
+        >
+          <FaArrowLeft className="mr-2" />
+          Back
+        </button>
+      </motion.div>
 
-      <h1 className="text-2xl font-bold mb-4">My Projects</h1>
+      <motion.h1 variants={itemVariants} className="text-4xl font-bold text-center mb-10 text-emerald-900">
+        My Projects
+      </motion.h1>
 
-      {projects.length === 0 ? (
-        <p>No projects found.</p>
+      {loading ? (
+        <p className="text-center text-gray-500">Loading projects...</p>
+      ) : projects.length === 0 ? (
+        <p className="text-center text-gray-500">No projects found.</p>
       ) : (
-        <div className="space-y-4">
+        <motion.div
+          className="space-y-6 max-w-4xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {projects.map((project) => (
-            <div
+            <motion.div
               key={project._id}
-              className="bg-white p-4 rounded shadow cursor-pointer transition duration-200 hover:shadow-lg"
+              className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer"
+              variants={itemVariants}
+              whileHover={{ scale: 1.03, boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)" }}
               onClick={() => toggleExpand(project._id)}
             >
-              <h2 className="text-xl font-semibold">{project.title}</h2>
-              <p><strong>Deadline:</strong> {new Date(project.timeline.deadline).toLocaleDateString()}</p>
-              <p className="text-gray-700">{project.description}</p>
-              <p><strong>projectId:</strong> {project.projectId}</p>
-
-              {expandedProjectId === project._id && (
-                <div className="mt-4 text-sm text-gray-800 border-t pt-4">
-                  <p><strong>Deliverables:</strong> {project.deliverables}</p>
-                  <p><strong>Status:</strong> {project.status}</p>
-                  {project.budget && (
-                    <p><strong>Budget:</strong> ₹{project.budget}</p>
-                  )}
-                  {project.references && (
-                    <p><strong>References:</strong> {project.references}</p>
-                  )}
-                  {project.ndaRequired && (
-                    <p className="text-red-600"><strong>NDA Required</strong></p>
-                  )}
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold text-emerald-800">{project.title}</h2>
+                <div className="flex items-center gap-4">
+                  <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                    project.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' :
+                    project.status === 'denied' ? 'bg-red-100 text-red-700' :
+                    'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                  </span>
+                  <motion.div
+                    animate={{ rotate: expandedProjectId === project._id ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {expandedProjectId === project._id ? <FaChevronUp className="text-gray-500" /> : <FaChevronDown className="text-gray-500" />}
+                  </motion.div>
                 </div>
-              )}
-            </div>
+              </div>
+
+              <AnimatePresence>
+                {expandedProjectId === project._id && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-4 text-sm text-gray-800 border-t pt-4 overflow-hidden"
+                  >
+                    <p className="mb-1"><strong className="font-semibold">Deadline:</strong> {new Date(project.deadline).toLocaleDateString()}</p>
+                    <p className="mb-1"><strong className="font-semibold">Description:</strong> {project.description}</p>
+                    <p className="mb-1"><strong className="font-semibold">Deliverables:</strong> {project.deliverables}</p>
+                    <p className="mb-1"><strong className="font-semibold">Budget:</strong> {project.budget}</p>
+                    {project.references && (
+                      <p className="mb-1"><strong className="font-semibold">References:</strong> {project.references}</p>
+                    )}
+                    {project.ndaRequired && (
+                      <p className="text-red-600 font-semibold mt-2">NDA Required</p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
