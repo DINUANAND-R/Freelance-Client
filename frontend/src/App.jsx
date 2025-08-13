@@ -25,6 +25,12 @@ import AdminFreelancerControl from './Components/Admin/AdminFreelancerControl';
 import ClientProfile from './Components/Client/ClientProfile';
 import FreelancerProfile from './Components/Freelancer/FreelanceProfile';
 import RecentChats from './Components/Chating/RecentChats';
+import FreelancerPost from './Components/Freelancer/FreelancerPost';
+import AdminAllProjects from './Components/Admin/AdminAllProjects';
+import AdminClientControl from './Components/Admin/AdminClientControl';
+import MyProjects from './Components/Freelancer/MyProjects';
+import FreelancerProfileToClient from './Components/Client/FreelancerProfileToView'
+import ClientProfile2 from './Components/Client/ClientProfile2';
 
 export default function App() {
   return (
@@ -49,10 +55,15 @@ export default function App() {
       <Route path='/client/myProjects' element={<MyProjectsForClients/>}/>
       <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
       <Route path='/admin/freelancer/control' element={<AdminFreelancerControl/>}/>
-      <Route path='/admin/client/control' element={<AdminFreelancerControl/>}/>
+      <Route path='/admin/client/control' element={<AdminClientControl/>}/>
       <Route path='/client/profile' element={<ClientProfile/>}/>
       <Route path='/freelancer/profile' element={<FreelancerProfile/>}/>
       <Route path='/chat/recent' element={<RecentChats  currentUserEmail='dinuanandcr.23cse@kongu.edu'/>}/>
+      <Route path='/freelancer/post' element={<FreelancerPost/>}/>
+      <Route path='/admin/projects' element={<AdminAllProjects/>}/>
+      <Route path='/freelancer/myprojects' element={<MyProjects/>}/>
+      <Route path='/profile/freelancer' element={<FreelancerProfileToClient/>}/>
+      <Route path='/freelancer/clientProfile' element={<ClientProfile2/>}/>
     </Routes>
   );
 }

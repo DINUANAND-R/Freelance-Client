@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaUserShield, FaUserTie, FaProjectDiagram } from 'react-icons/fa';
 import axios from 'axios';
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
-const COLORS = ['#4B0082', '#A0522D', '#CD5C5C', '#800000']; // Maroon-ish themed chart colors
+const COLORS = ['#4B0082', '#A0522D', '#CD5C5C', '#800000']; // Maroon-ish chart colors
 
 export default function AdminDashboard() {
   const [freelancers, setFreelancers] = useState([]);
@@ -20,9 +20,10 @@ export default function AdminDashboard() {
     pending: 0,
   });
 
+  const location = useLocation();
+  const { email } = location.state || { email: 'Admin' };
   const navigate = useNavigate();
   const adminName = "Admin";
-  const adminEmail = "admin@freelancehub.com";
 
   useEffect(() => {
     axios.get('http://localhost:9000/api/admin/freelancers').then(res => setFreelancers(res.data));
@@ -62,21 +63,25 @@ export default function AdminDashboard() {
         <div>
           <h1 className="text-2xl font-bold text-red-800">FreelanceHub</h1>
           <p className="text-sm text-gray-600">
-            Logged in as <strong>{adminName}</strong><br />{adminEmail}
+            Logged in as <strong>{adminName}</strong><br />{email}
           </p>
         </div>
         <div className="space-x-6 text-red-900 font-medium">
-          <button onClick={() => navigate('/admin/client/control')}>Clients</button>
-          <button onClick={() => navigate('/admin/freelancer/control')}>Freelancers</button>
-          <button onClick={() => navigate('/projects')}>Projects</button>
+          <button onClick={() => navigate('/admin/client/control', { state: { email } })}>Clients</button>
+          <button onClick={() => navigate('/admin/freelancer/control', { state: { email } })}>Freelancers</button>
+          <button onClick={() => navigate('/admin/projects', { state: { email } })}>Projects</button>
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              navigate('/', { replace: true });
+            }}
             className="bg-red-700 text-white px-4 py-1 rounded hover:bg-red-800"
           >
             Logout
           </button>
         </div>
-      </div>
+      </div> {/* ✅ Closing navigation div */}
 
       {/* Welcome Section */}
       <div className="text-center py-12">

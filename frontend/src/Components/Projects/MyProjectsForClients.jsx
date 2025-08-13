@@ -65,7 +65,7 @@ export default function MyProjectsForClients() {
       {/* Back Button */}
       <motion.div variants={itemVariants} className="w-full max-w-4xl mx-auto mb-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/client/dashboard',{state:{name,email}})}
           className="flex items-center text-emerald-700 font-medium hover:text-emerald-500 transition-colors"
         >
           <FaArrowLeft className="mr-2" />
@@ -88,7 +88,10 @@ export default function MyProjectsForClients() {
           initial="hidden"
           animate="visible"
         >
-          {projects.map((project) => (
+          {/* We filter out denied projects before mapping */}
+          {projects
+            .filter(project => project.status !== 'denied')
+            .map((project) => (
             <motion.div
               key={project._id}
               className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer"

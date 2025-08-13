@@ -24,6 +24,15 @@ export default function FreelancersList() {
     });
   };
 
+  const handleViewProfile = (freelancer) => {
+    navigate('/profile/freelancer', {
+      state: {
+        clientEmail:email,
+        email: freelancer.email,
+      },
+    });
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -57,7 +66,7 @@ export default function FreelancersList() {
             <p className="text-xs text-emerald-500">{email}</p>
           </div>
           <motion.button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/client/dashboard',{state:{name,email}})}
             className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -120,14 +129,22 @@ export default function FreelancersList() {
                   </motion.a>
                 )}
               </div>
-              <div className="mt-6">
+              <div className="mt-6 flex gap-4">
                 <motion.button
                   onClick={() => handleConnect(freelancer)}
-                  className="bg-emerald-700 text-white w-full py-2 rounded-lg hover:bg-emerald-600 transition font-semibold"
+                  className="bg-emerald-700 text-white flex-grow py-2 rounded-lg hover:bg-emerald-600 transition font-semibold"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   Connect
+                </motion.button>
+                <motion.button
+                  onClick={() => handleViewProfile(freelancer)}
+                  className="bg-emerald-500 text-white flex-grow py-2 rounded-lg hover:bg-emerald-400 transition font-semibold"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  View Profile
                 </motion.button>
               </div>
             </motion.div>

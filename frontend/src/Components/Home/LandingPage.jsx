@@ -181,7 +181,6 @@ export default function LandingPage() {
             <a href="/contact" className="text-slate-600 hover:text-teal-600 font-medium text-lg transition-colors duration-200">Contact</a>
             <Link to={'/role'}>
             <button
-              onClick={() => console.log('Get Started clicked')}
               className="bg-teal-600 text-white px-6 py-3 rounded-full hover:bg-teal-700 transition-transform duration-300 transform hover:scale-105 shadow-md"
             >
               Get Started

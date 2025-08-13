@@ -26,6 +26,7 @@ const MONGO_URL = process.env.MONGO_URL;
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/freelancerPosts', express.static(path.join(__dirname, 'uploads', 'freelancerPosts')));
 
 // Routes
 const clientRoutes = require('./Routers/ClientRouter');
@@ -48,6 +49,16 @@ app.use('/api/admin', adminRouter);
 
 const adminLogin = require('./Routers/AdminLoginRouter');
 app.use('/admin', adminLogin);
+
+const email = require('./Routers/EmailRouter');
+app.use('/api/email',email);
+
+const freelancerPost = require('./Routers/FreelancerPostRouter');
+app.use('/api/post',freelancerPost);
+
+const RatingRouter = require('./Routers/RatingRouter');
+app.use('/api/rating',RatingRouter);
+
 
 // Socket.IO real-time messaging
 io.on('connection', (socket) => {

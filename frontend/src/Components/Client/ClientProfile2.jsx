@@ -143,7 +143,7 @@ const ClientProfile = () => {
 
   return (
     <motion.div
-      className="min-h-screen bg-emerald-950 text-gray-100 flex flex-col justify-between font-sans"
+      className="min-h-screen bg-blue-950 text-gray-100 flex flex-col justify-between font-sans"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -152,8 +152,8 @@ const ClientProfile = () => {
         {/* Back Button */}
         <motion.div variants={itemVariants} className="mb-6">
           <button
-            onClick={() => navigate('/client/dashboard', { state: { name, email } })}
-            className="flex items-center text-emerald-300 px-4 py-2 rounded-lg hover:bg-emerald-800 transition-colors"
+            onClick={() => navigate(-1)}
+            className="flex items-center text-blue-300 px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
           >
             <FaArrowLeft className="mr-2" />
             Back to Dashboard
@@ -162,7 +162,7 @@ const ClientProfile = () => {
 
         {/* Profile Section */}
         <motion.div
-          className="bg-emerald-900 rounded-2xl shadow-xl p-8 border border-emerald-800"
+          className="bg-blue-900 rounded-2xl shadow-xl p-8 border border-blue-800"
           variants={itemVariants}
         >
           <div className="flex flex-col lg:flex-row gap-8">
@@ -171,17 +171,17 @@ const ClientProfile = () => {
               <motion.img
                 src={`http://localhost:9000/${profile.photo}`}
                 alt="Profile"
-                className="w-32 h-32 rounded-full mb-4 object-cover border-4 border-emerald-500 shadow-md"
+                className="w-32 h-32 rounded-full mb-4 object-cover border-4 border-blue-500 shadow-md"
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ duration: 0.6, type: 'spring', stiffness: 120 }}
               />
               <div className="text-left space-y-3 w-full">
                 <p className="text-xl font-bold text-gray-100">{profile.name}</p>
-                <p className="text-md text-emerald-300 font-medium">
+                <p className="text-md text-blue-300 font-medium">
                   <span className="font-semibold text-gray-100">Email:</span> {profile.email}
                 </p>
-                <p className="text-md text-emerald-300 font-medium">
+                <p className="text-md text-blue-300 font-medium">
                   <span className="font-semibold text-gray-100">Address:</span>
                   <br />
                   {profile.address}
@@ -191,7 +191,7 @@ const ClientProfile = () => {
                     href={profile.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
+                    className="flex items-center text-blue-400 hover:text-blue-300 transition-colors font-medium"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -209,7 +209,7 @@ const ClientProfile = () => {
               {/* Project Stats */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <motion.div
-                  className="bg-emerald-800 p-6 rounded-lg shadow-inner border-l-4 border-emerald-500"
+                  className="bg-blue-800 p-6 rounded-lg shadow-inner border-l-4 border-blue-500"
                   variants={cardVariants}
                   whileHover={{
                     scale: 1.05,
@@ -217,16 +217,16 @@ const ClientProfile = () => {
                     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
                   }}
                 >
-                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">
+                  <h4 className="text-sm font-semibold text-blue-300 mb-2">
                     Projects Completed
                   </h4>
                   <p className="text-3xl font-bold text-gray-100 flex items-center">
                     {projectStats.completed}
-                    <FaCheckCircle className="ml-2 text-emerald-500" size={24} />
+                    <FaCheckCircle className="ml-2 text-blue-500" size={24} />
                   </p>
                 </motion.div>
                 <motion.div
-                  className="bg-emerald-800 p-6 rounded-lg shadow-inner border-l-4 border-indigo-500"
+                  className="bg-blue-800 p-6 rounded-lg shadow-inner border-l-4 border-indigo-500"
                   variants={cardVariants}
                   whileHover={{
                     scale: 1.05,
@@ -234,7 +234,7 @@ const ClientProfile = () => {
                     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
                   }}
                 >
-                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">
+                  <h4 className="text-sm font-semibold text-blue-300 mb-2">
                     Projects Accepted
                   </h4>
                   <p className="text-3xl font-bold text-gray-100 flex items-center">
@@ -243,7 +243,7 @@ const ClientProfile = () => {
                   </p>
                 </motion.div>
                 <motion.div
-                  className="bg-emerald-800 p-6 rounded-lg shadow-inner border-l-4 border-amber-500"
+                  className="bg-blue-800 p-6 rounded-lg shadow-inner border-l-4 border-amber-500"
                   variants={cardVariants}
                   whileHover={{
                     scale: 1.05,
@@ -251,7 +251,7 @@ const ClientProfile = () => {
                     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)',
                   }}
                 >
-                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">
+                  <h4 className="text-sm font-semibold text-blue-300 mb-2">
                     Projects Pending
                   </h4>
                   <p className="text-3xl font-bold text-gray-100 flex items-center">
@@ -272,7 +272,7 @@ const ClientProfile = () => {
               {recentProjects.map((project, index) => (
                 <motion.div
                   key={project._id}
-                  className="bg-emerald-900 rounded-lg p-6 shadow-md border border-emerald-800"
+                  className="bg-blue-900 rounded-lg p-6 shadow-md border border-blue-800"
                   initial={{ y: 50, opacity: 0, scale: 0.9 }}
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: -50, opacity: 0, scale: 0.9 }}
@@ -280,13 +280,13 @@ const ClientProfile = () => {
                   whileHover={{ scale: 1.03, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)' }}
                 >
                   <h3 className="text-lg font-bold text-gray-100 flex items-center mb-2">
-                    <FaProjectDiagram className="mr-2 text-emerald-400" />
+                    <FaProjectDiagram className="mr-2 text-blue-400" />
                     {project.title}
                   </h3>
-                  <p className="text-sm text-emerald-300">
+                  <p className="text-sm text-blue-300">
                     <span className="font-semibold text-gray-100">Status:</span> {project.status}
                   </p>
-                  <p className="text-sm text-emerald-300">
+                  <p className="text-sm text-blue-300">
                     <span className="font-semibold text-gray-100">Deadline:</span>{' '}
                     {project.deadline ? format(project.deadline, 'MMM d, yyyy') : 'N/A'}
                   </p>
@@ -303,12 +303,12 @@ const ClientProfile = () => {
             {months.map(({ month, days }, idx) => (
               <div
                 key={idx}
-                className="bg-emerald-900 rounded-lg p-6 shadow-md border border-emerald-800 w-full sm:w-[300px]"
+                className="bg-blue-900 rounded-lg p-6 shadow-md border border-blue-800 w-full sm:w-[300px]"
               >
                 <h3 className="text-xl font-bold mb-4 text-center text-gray-100">{month}</h3>
                 <div className="grid grid-cols-7 gap-1 text-center text-sm">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                    <div key={i} className="font-semibold text-emerald-300">
+                    <div key={i} className="font-semibold text-blue-300">
                       {day}
                     </div>
                   ))}
@@ -318,8 +318,8 @@ const ClientProfile = () => {
                       className={`relative h-8 w-8 flex items-center justify-center rounded-lg font-medium transition-colors
                         ${
                           isActive(day)
-                            ? 'bg-emerald-600 text-white shadow-lg'
-                            : 'bg-transparent text-emerald-300'
+                            ? 'bg-blue-600 text-white shadow-lg'
+                            : 'bg-transparent text-blue-300'
                         }`}
                       title={`${format(day, 'eeee, MMM d')} - ${
                         isActive(day) ? 'Active' : 'Inactive'
@@ -339,7 +339,7 @@ const ClientProfile = () => {
 
       {/* Footer */}
       <motion.footer
-        className="bg-emerald-900 text-emerald-300 text-center py-6 mt-10 border-t border-emerald-800"
+        className="bg-blue-900 text-blue-300 text-center py-6 mt-10 border-t border-blue-800"
         variants={itemVariants}
       >
         <p className="text-sm">

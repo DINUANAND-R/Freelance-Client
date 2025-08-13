@@ -7,21 +7,21 @@ import { FaArrowLeft, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 export default function ClientRequestPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { email: clientEmail, name } = location.state || {};
+  const { email: email, name } = location.state || {};
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({});
-  const [currentRequestId, setCurrentRequestId] = useState(null);
+  const [currentRequestId, setCurrentRequestId] = useState(null); 
 
   useEffect(() => {
-    if (!clientEmail) {
+    if (!email) {
       setLoading(false);
       return;
     }
     setLoading(true);
     axios
-      .get(`http://localhost:9000/api/project-requests/client/${clientEmail}`)
+      .get(`http://localhost:9000/api/project-requests/client/${email}`)
       .then((res) => {
         setRequests(res.data);
         setLoading(false);
@@ -30,7 +30,7 @@ export default function ClientRequestPage() {
         console.error('Failed to fetch project requests:', err);
         setLoading(false);
       });
-  }, [clientEmail]);
+  }, [email]);
 
   const handleAction = (requestId, type) => {
     setCurrentRequestId(requestId);
@@ -119,7 +119,7 @@ export default function ClientRequestPage() {
       {/* Back Button */}
       <motion.div variants={itemVariants} className="w-full max-w-4xl mx-auto mb-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/client/dashboard',{state:{name,email}})}
           className="flex items-center text-emerald-700 font-medium hover:text-emerald-500 transition-colors"
         >
           <FaArrowLeft className="mr-2" />

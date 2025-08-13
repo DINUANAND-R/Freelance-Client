@@ -1,8 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const Project = require('../Modules/Project');
+const nodemailer = require('nodemailer');
 
-
+// Configure SMTP transporter
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // use STARTTLS
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
+});
+// ===================== CREATE PROJECT =====================
 router.post('/create', async (req, res) => {
   try {
     const {
@@ -17,7 +28,7 @@ router.post('/create', async (req, res) => {
       ndaRequired
     } = req.body;
 
-    // Count existing documents to create a unique Project ID
+    // Count existing projects to create a unique ID
     const count = await Project.countDocuments();
     const projectId = `PID${count + 1}`;
 
@@ -36,6 +47,29 @@ router.post('/create', async (req, res) => {
     });
 
     await newProject.save();
+
+    // Send confirmation email (non-blocking)
+    transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: clientEmail,
+      subject: 'Your project has been posted!',
+      text: `Hello ${clientName},
+
+Your project "${title}" (ID: ${projectId}) has been successfully posted.
+
+Details:
+- Budget: ${budget}
+- Deadline: ${deadline}
+
+Thank you for using our service!
+`,
+    }).then(() => {
+      console.log(`📧 Email sent to ${clientEmail}`);
+    }).catch((err) => {
+      console.error('❌ Failed to send email:', err);
+    });
+
+    // Send response immediately
     res.status(201).json({ message: '✅ Project posted successfully', project: newProject });
   } catch (error) {
     console.error('❌ Error posting project:', error);
@@ -43,9 +77,7 @@ router.post('/create', async (req, res) => {
   }
 });
 
-
-
-// Get all projects
+// ===================== GET ALL PROJECTS =====================
 router.get('/all', async (req, res) => {
   try {
     const projects = await Project.find().sort({ createdAt: -1 });
@@ -56,7 +88,7 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// Get project by ID
+// ===================== GET PROJECT BY ID =====================
 router.get('/:id', async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -70,21 +102,21 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET projects by client email
+// ===================== GET PROJECTS BY CLIENT EMAIL =====================
 router.get('/client/:email', async (req, res) => {
   try {
     const projects = await Project.find({ clientEmail: req.params.email });
     res.status(200).json(projects);
   } catch (err) {
+    console.error('❌ Error fetching client projects:', err);
     res.status(500).json({ error: 'Failed to fetch client projects' });
   }
 });
 
+// ===================== GET PROJECT STATUS COUNTS =====================
 router.get('/project-status/:email', async (req, res) => {
   try {
     const { email } = req.params;
-
-    // Find projects linked to client by email (modify based on your DB schema)
     const projects = await Project.find({ clientEmail: email });
 
     const counts = {
@@ -101,8 +133,27 @@ router.get('/project-status/:email', async (req, res) => {
 
     res.status(200).json(counts);
   } catch (err) {
-    console.error(err);
+    console.error('❌ Error getting project status:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+router.get('/client/recent/:email', async (req, res) => {
+  const clientEmail = req.params.email;
+
+  try {
+    const recentProjects = await Project.find({ clientEmail })
+      .sort({ createdAt: -1 }) // newest first
+      .limit(5)
+      .select('title status budget timeline deadline deliverables createdAt') // select fields you want
+      .lean();
+
+    res.json(recentProjects);
+  } catch (error) {
+    console.error('Error fetching recent projects:', error);
+    res.status(500).json({ message: 'Server error fetching recent projects' });
+  }
+});
+
+
 module.exports = router;

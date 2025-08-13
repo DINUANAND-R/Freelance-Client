@@ -8,6 +8,7 @@ const freelancerSchema = new mongoose.Schema({
   linkedin: { type: String },
   github: { type: String },
   profileImage: { type: String },
+  loginHistory: [Date],
   role: { type: String, default: 'Freelancer' }, // ✅ Added role with default
 }, { timestamps: true });
 

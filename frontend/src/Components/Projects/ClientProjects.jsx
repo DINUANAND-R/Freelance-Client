@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 
 export default function ClientPostProject() {
@@ -29,7 +29,6 @@ export default function ClientPostProject() {
 
   const handleNext = () => {
     if (!formData.title.trim() || !formData.description.trim()) {
-      // In a real app, consider replacing this with a custom modal instead of an alert.
       alert('Please fill in the required fields: Project Title and Description');
       return;
     }
@@ -43,15 +42,15 @@ export default function ClientPostProject() {
     try {
       const response = await axios.post('http://localhost:9000/api/projects/create', formData);
       console.log('✅ Project posted successfully:', response.data);
-      // In a real app, consider replacing this with a custom success modal.
-      alert('Project posted successfully!');
+
+      alert('Project posted and email sent successfully!');
       navigate(-1);
     } catch (err) {
       console.error('❌ Network or server error:', err);
-      // In a real app, consider replacing this with a custom error modal.
       alert('Network error or server failure: ' + (err.response?.data?.error || err.message));
     }
   };
+
 
   const pageTransition = {
     initial: { opacity: 0, x: 50 },
@@ -81,10 +80,9 @@ export default function ClientPostProject() {
       initial="hidden"
       animate="visible"
     >
-      {/* Back button */}
       <motion.div variants={itemVariants} className="w-full max-w-2xl mb-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/client/dashboard',{state:{name,email}})}
           className="flex items-center text-emerald-700 font-medium hover:text-emerald-500 transition-colors"
         >
           <FaArrowLeft className="mr-2" />
@@ -96,7 +94,6 @@ export default function ClientPostProject() {
         Post a New Project
       </motion.h2>
 
-      {/* Step Indicator */}
       <motion.div
         className="flex items-center mb-10 space-x-4"
         variants={containerVariants}

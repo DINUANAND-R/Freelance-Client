@@ -6,7 +6,7 @@ export default function AdminFreelancerControl() {
   const [freelancers, setFreelancers] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const { name, email } = location.state || {};
+  const {email } = location.state || {};
 
   useEffect(() => {
     axios.get('http://localhost:9000/api/freelancers/all')
@@ -23,9 +23,18 @@ export default function AdminFreelancerControl() {
     });
   };
 
-  const handleBlock = (freelancerEmail) => {
-    alert(`Blocked ${freelancerEmail}`);
-    // Add actual block logic here if needed
+  const handleBlock = async (freelancerEmail) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete ${freelancerEmail}?`);
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:9000/api/freelancers/delete/${freelancerEmail}`);
+      setFreelancers(prev => prev.filter(f => f.email !== freelancerEmail));
+      alert(`Freelancer ${freelancerEmail} has been deleted.`);
+    } catch (err) {
+      console.error('Error deleting freelancer:', err);
+      alert('Failed to delete freelancer. Please try again.');
+    }
   };
 
   return (

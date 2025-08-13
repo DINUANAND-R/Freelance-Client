@@ -71,7 +71,7 @@
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setMessage(res.data.message);
-        navigate('/freelancer/dashboard');
+        navigate('/freelancer/dashboard',{state:{name:formData.name,email:formData.email}});
       } catch (err) {
         console.error('Registration error:', err);
         setMessage(err.response?.data?.message || 'Registration failed.');

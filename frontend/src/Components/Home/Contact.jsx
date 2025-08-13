@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 text-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800">
       {/* Navbar */}
-      <nav className="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow">
+      <nav className="bg-blue-700 text-white px-6 py-4 flex justify-between items-center shadow">
         <h1 className="text-2xl font-bold">Freelance Connect</h1>
         <div className="space-x-6 text-lg">
-          <Link to="/" className="hover:text-gray-200">Home</Link>
-          <Link to="/about" className="hover:text-gray-200">About</Link>
-          <Link to="/contact" className="hover:text-gray-200">Contact</Link>
+          <Link to="/" className="hover:text-gray-200 transition-colors duration-300">Home</Link>
+          <Link to="/about" className="hover:text-gray-200 transition-colors duration-300">About</Link>
+          <Link to="/contact" className="hover:text-gray-200 transition-colors duration-300">Contact</Link>
         </div>
       </nav>
 
@@ -26,29 +26,29 @@ export default function Contact() {
       <section className="px-8 py-10 bg-white shadow-inner grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto rounded-xl">
         {/* Contact Form */}
         <div>
-          <h3 className="text-2xl font-semibold mb-4 text-green-800">Send a Message</h3>
+          <h3 className="text-2xl font-semibold mb-4 text-blue-800">Send a Message</h3>
           <form className="space-y-4">
             <input
               type="text"
               placeholder="Your Name"
-              className="w-full border border-gray-300 p-3 rounded"
+              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             <input
               type="email"
               placeholder="Your Email"
-              className="w-full border border-gray-300 p-3 rounded"
+              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
             <textarea
               rows="5"
               placeholder="Your Message"
-              className="w-full border border-gray-300 p-3 rounded"
+              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             ></textarea>
             <button
               type="submit"
-              className="bg-green-700 text-white px-6 py-3 rounded hover:bg-green-800"
+              className="bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800 transition-colors duration-300"
             >
               Submit
             </button>
@@ -56,8 +56,10 @@ export default function Contact() {
         </div>
 
         {/* Contact Info */}
-        <div className="bg-green-50 p-6 rounded-xl shadow">
-          <h3 className="text-2xl font-semibold mb-4 text-green-800">Reach Us</h3>
+        <div 
+            className="bg-blue-50 p-6 rounded-xl shadow transform transition-transform duration-300 hover:scale-105"
+        >
+          <h3 className="text-2xl font-semibold mb-4 text-blue-800">Reach Us</h3>
           <p className="text-lg mb-4">
             📍 Chennai, India<br />
             📧 support@freelanceconnect.com<br />
@@ -70,7 +72,7 @@ export default function Contact() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-green-700 text-white px-10 py-12 mt-10">
+      <footer className="bg-blue-700 text-white px-10 py-12 mt-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
           <div>
             <h4 className="text-xl font-semibold mb-4">About Freelance Connect</h4>
@@ -89,9 +91,9 @@ export default function Contact() {
           <div>
             <h4 className="text-xl font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/" className="hover:underline">Home</Link></li>
+              <li><Link to="/about" className="hover:underline">About</Link></li>
+              <li><Link to="/login" className="hover:underline">Login</Link></li>
             </ul>
           </div>
           <div>

@@ -2,10 +2,22 @@
 const Client = require('../Modules/ClientModule');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const path = require('path');
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // STARTTLS
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
+});
 
 exports.registerClient = async (req, res) => {
   const { name, email, address, password, linkedin } = req.body;
-  const photo = req.file?.path;
+  const photo = req.file ? path.normalize(req.file.path) : null;
 
   try {
     const existing = await Client.findOne({ email });
@@ -20,10 +32,23 @@ exports.registerClient = async (req, res) => {
       password: hashedPassword,
       linkedin,
       photo,
-      loginHistory: [] // initialize with empty
+      loginHistory: []
     });
 
     await client.save();
+
+    // Send welcome email (non-blocking)
+    transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: email,
+      subject: 'Welcome to Our Platform!',
+      text: `Hello ${name},\n\nYour account has been successfully created.\n\nThank you for joining us!`
+    }).then(() => {
+      console.log(`📧 Email sent to ${email}`);
+    }).catch((err) => {
+      console.error('❌ Failed to send email:', err);
+    });
+
     res.status(201).json({ message: 'Client registered successfully', client });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -40,8 +65,9 @@ exports.loginClient = async (req, res) => {
     const isMatch = await bcrypt.compare(password, client.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-    // 👉 Add login timestamp to loginHistory
+    // Track login history
     client.loginHistory.push(new Date());
+    if (client.loginHistory.length > 20) client.loginHistory.shift(); // keep only latest 20
     await client.save();
 
     const token = jwt.sign(

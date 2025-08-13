@@ -28,7 +28,7 @@ export default function AdminLogin() {
       localStorage.setItem('adminToken', token);
 
       console.log(message);
-      navigate('/admin/dashboard');
+      navigate('/admin/dashboard',{state:{email:formData.email}});
     } catch (err) {
       console.error('Login error:', err);
       setError(err.response?.data?.message || 'Login failed');

@@ -7,15 +7,17 @@ import { motion } from 'framer-motion';
 export default function ClientDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { name, email } = location.state || JSON.parse(localStorage.getItem('client')) || {};
+  const { name, email } =
+    location.state || JSON.parse(localStorage.getItem('client')) || {};
 
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     if (email) {
-      axios.get(`http://localhost:9000/api/projects/client/${email}`)
-        .then(res => setProjects(res.data))
-        .catch(err => console.error("Failed to fetch projects:", err));
+      axios
+        .get(`http://localhost:9000/api/projects/client/${email}`)
+        .then((res) => setProjects(res.data))
+        .catch((err) => console.error('Failed to fetch projects:', err));
     }
   }, [email]);
 
@@ -33,17 +35,23 @@ export default function ClientDashboard() {
     hover: {
       scale: 1.05,
       y: -5,
-      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.08)",
-      transition: { duration: 0.3 }
-    }
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.08)',
+      transition: { duration: 0.3 },
+    },
   };
 
   const iconHoverVariants = {
     hover: {
       scale: 1.1,
       rotate: 360,
-      transition: { duration: 0.5 }
-    }
+      transition: { duration: 0.5 },
+    },
+  };
+
+  // Logout handler to clear client info and navigate to login
+  const handleLogout = () => {
+    localStorage.removeItem('client');
+    navigate('/'); // or wherever your login page route is
   };
 
   return (
@@ -54,18 +62,47 @@ export default function ClientDashboard() {
       animate="visible"
     >
       {/* Navbar */}
-      <motion.header className="bg-emerald-900 text-white shadow-lg" variants={itemVariants}>
+      <motion.header
+        className="bg-emerald-900 text-white shadow-lg"
+        variants={itemVariants}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-extrabold text-emerald-400">FreelanceHub</h1>
-            <p className="text-sm text-gray-300">Logged in as <span className="text-emerald-400 font-medium">{name}</span></p>
+            <h1 className="text-2xl font-extrabold text-emerald-400">
+              FreelanceHub
+            </h1>
+            <p className="text-sm text-gray-300">
+              Logged in as{' '}
+              <span className="text-emerald-400 font-medium">{name}</span>
+            </p>
           </div>
           <nav className="space-x-6 hidden md:flex items-center">
-            <button onClick={() => navigate('/freelancers', { state: { name, email } })} className="hover:text-emerald-400 font-medium transition-colors">Find Freelancers</button>
-            <button onClick={() => navigate('/client/myProjects', { state: { name, email } })} className="hover:text-emerald-400 font-medium transition-colors">My Projects</button>
-            <button onClick={() => navigate('/client/profile', { state: { email: email } })} className="hover:text-emerald-400 font-medium transition-colors">Profile</button>
             <button
-              onClick={() => navigate('/')}
+              onClick={() =>
+                navigate('/freelancers', { state: { name, email } })
+              }
+              className="hover:text-emerald-400 font-medium transition-colors"
+            >
+              Find Freelancers
+            </button>
+            <button
+              onClick={() =>
+                navigate('/client/myProjects', { state: { name, email } })
+              }
+              className="hover:text-emerald-400 font-medium transition-colors"
+            >
+              My Projects
+            </button>
+            <button
+              onClick={() =>
+                navigate('/client/profile', { state: { name, email } })
+              }
+              className="hover:text-emerald-400 font-medium transition-colors"
+            >
+              Profile
+            </button>
+            <button
+              onClick={handleLogout}
               className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
             >
               Logout
@@ -74,6 +111,7 @@ export default function ClientDashboard() {
         </div>
       </motion.header>
 
+      {/* Main */}
       <main className="flex-grow px-6 py-12 text-center">
         {/* Hero Section */}
         <motion.h2
@@ -90,7 +128,8 @@ export default function ClientDashboard() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          Easily manage your projects, connect with top freelancers, and track your collaborations.
+          Easily manage your projects, connect with top freelancers, and track
+          your collaborations.
         </motion.p>
 
         {/* Main Action Cards */}
@@ -99,7 +138,9 @@ export default function ClientDashboard() {
           variants={containerVariants}
         >
           <motion.div
-            onClick={() => navigate('/client/project-request', { state: { email, name } })}
+            onClick={() =>
+              navigate('/client/project-request', { state: { email, name } })
+            }
             className="bg-white shadow-lg rounded-2xl p-8 cursor-pointer border border-gray-200"
             variants={cardHoverVariants}
             whileHover="hover"
@@ -107,8 +148,12 @@ export default function ClientDashboard() {
             <motion.div variants={iconHoverVariants}>
               <FaPlusCircle className="text-emerald-500 text-4xl mb-4 mx-auto" />
             </motion.div>
-            <h4 className="text-xl font-semibold text-emerald-900 mb-2">Post a New Project</h4>
-            <p className="text-gray-500 text-sm">Start by posting a project to attract top talent.</p>
+            <h4 className="text-xl font-semibold text-emerald-900 mb-2">
+              Post a New Project
+            </h4>
+            <p className="text-gray-500 text-sm">
+              Start by posting a project to attract top talent.
+            </p>
           </motion.div>
 
           <motion.div
@@ -120,12 +165,18 @@ export default function ClientDashboard() {
             <motion.div variants={iconHoverVariants}>
               <FaUserFriends className="text-emerald-500 text-4xl mb-4 mx-auto" />
             </motion.div>
-            <h4 className="text-xl font-semibold text-emerald-900 mb-2">Browse Freelancers</h4>
-            <p className="text-gray-500 text-sm">Explore and shortlist freelancers for your tasks.</p>
+            <h4 className="text-xl font-semibold text-emerald-900 mb-2">
+              Browse Freelancers
+            </h4>
+            <p className="text-gray-500 text-sm">
+              Explore and shortlist freelancers for your tasks.
+            </p>
           </motion.div>
 
           <motion.div
-            onClick={() => navigate('/requesrForClient', { state: { email, name } })}
+            onClick={() =>
+              navigate('/requesrForClient', { state: { email, name } })
+            }
             className="bg-white shadow-lg rounded-2xl p-8 cursor-pointer border border-gray-200"
             variants={cardHoverVariants}
             whileHover="hover"
@@ -133,8 +184,12 @@ export default function ClientDashboard() {
             <motion.div variants={iconHoverVariants}>
               <FaCog className="text-emerald-500 text-4xl mb-4 mx-auto" />
             </motion.div>
-            <h4 className="text-xl font-semibold text-emerald-900 mb-2">Requests</h4>
-            <p className="text-gray-500 text-sm">View and manage all incoming project proposals.</p>
+            <h4 className="text-xl font-semibold text-emerald-900 mb-2">
+              Requests
+            </h4>
+            <p className="text-gray-500 text-sm">
+              View and manage all incoming project proposals.
+            </p>
           </motion.div>
         </motion.div>
 
@@ -143,9 +198,13 @@ export default function ClientDashboard() {
           className="max-w-6xl mx-auto mt-10 text-left"
           variants={itemVariants}
         >
-          <h3 className="text-2xl font-bold text-emerald-900 mb-4">Your Posted Projects</h3>
+          <h3 className="text-2xl font-bold text-emerald-900 mb-4">
+            Your Posted Projects
+          </h3>
           {projects.length === 0 ? (
-            <p className="text-gray-600">You haven’t posted any projects yet.</p>
+            <p className="text-gray-600">
+              You haven’t posted any projects yet.
+            </p>
           ) : (
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -157,14 +216,26 @@ export default function ClientDashboard() {
                   className="bg-white rounded-xl shadow-md p-5 border border-gray-200 hover:shadow-lg transition-shadow"
                   variants={itemVariants}
                 >
-                  <h4 className="text-xl font-semibold text-emerald-700 mb-1">{project.title}</h4>
-                  <p className="text-sm text-gray-600 mb-1">Budget: ₹{project.budget}</p>
-                  <p className="text-sm text-gray-600 mb-1">Status: {project.status}</p>
-                  <p className="text-sm text-gray-600">Deadline: {new Date(project.timeline.deadline).toLocaleDateString('en-IN', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })}</p>
+                  <h4 className="text-xl font-semibold text-emerald-700 mb-1">
+                    {project.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-1">
+                    Budget: ₹{project.budget}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    Status: {project.status}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Deadline:{' '}
+                    {new Date(project.timeline.deadline).toLocaleDateString(
+                      'en-IN',
+                      {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      }
+                    )}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
@@ -173,12 +244,25 @@ export default function ClientDashboard() {
       </main>
 
       {/* Footer */}
-      <motion.footer className="bg-emerald-100 text-emerald-900 text-center py-6 border-t border-emerald-200" variants={itemVariants}>
+      <motion.footer
+        className="bg-emerald-100 text-emerald-900 text-center py-6 border-t border-emerald-200"
+        variants={itemVariants}
+      >
         <div className="flex justify-center space-x-6 mb-2">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-emerald-600 transition-colors">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 hover:text-emerald-600 transition-colors"
+          >
             <FaGithub size={24} />
           </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-emerald-600 transition-colors">
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-600 hover:text-emerald-600 transition-colors"
+          >
             <FaLinkedin size={24} />
           </a>
         </div>
