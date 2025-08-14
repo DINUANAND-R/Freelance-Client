@@ -124,7 +124,6 @@ router.get('/freelancer/:email', async (req, res) => {
   }
 });
 
-// 📌 GET: All ACCEPTED projects for a freelancer
 // 📌 GET: All ACCEPTED projects for a freelancer with full project details
 router.get('/freelancer/projects/:email', async (req, res) => {
   try {
@@ -158,6 +157,23 @@ router.get('/freelancer/projects/:email', async (req, res) => {
     res.status(200).json(mergedResults);
   } catch (error) {
     console.error('Error fetching freelancer projects:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.put('/:id/complete', async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    project.status = 'Completed';
+    await project.save();
+
+    res.json({ message: 'Project marked as completed', project });
+  } catch (error) {
+    console.error('Error marking project as completed:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

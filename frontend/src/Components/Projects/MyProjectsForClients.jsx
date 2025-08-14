@@ -8,14 +8,17 @@ export default function MyProjectsForClients() {
   const [projects, setProjects] = useState([]);
   const [expandedProjectId, setExpandedProjectId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null); // Track which project is being updated
   const location = useLocation();
   const navigate = useNavigate();
   const { name, email } = location.state || {};
 
+  // Fetch projects for this client
   useEffect(() => {
     if (email) {
       setLoading(true);
-      axios.get(`http://localhost:9000/api/projects/client/${email}`)
+      axios
+        .get(`http://localhost:9000/api/projects/client/${email}`)
         .then(res => {
           setProjects(res.data);
           setLoading(false);
@@ -31,14 +34,27 @@ export default function MyProjectsForClients() {
     setExpandedProjectId(prev => (prev === id ? null : id));
   };
 
+  // ✅ Mark project as completed
+  const markAsCompleted = async (id) => {
+    try {
+      setUpdatingId(id);
+      await axios.put(`http://localhost:9000/api/projects/${id}/complete`);
+      setProjects(prev =>
+        prev.map(p => p._id === id ? { ...p, status: 'completed' } : p)
+      );
+    } catch (err) {
+      console.error('Error marking project as completed:', err);
+      alert('Failed to mark as completed. Please try again.');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2
-      }
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 }
     },
   };
 
@@ -48,10 +64,7 @@ export default function MyProjectsForClients() {
       y: 0,
       opacity: 1,
       rotate: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100
-      }
+      transition: { type: "spring", stiffness: 100 }
     },
   };
 
@@ -65,11 +78,10 @@ export default function MyProjectsForClients() {
       {/* Back Button */}
       <motion.div variants={itemVariants} className="w-full max-w-4xl mx-auto mb-6">
         <button
-          onClick={() => navigate('/client/dashboard',{state:{name,email}})}
+          onClick={() => navigate('/client/dashboard', { state: { name, email } })}
           className="flex items-center text-emerald-700 font-medium hover:text-emerald-500 transition-colors"
         >
-          <FaArrowLeft className="mr-2" />
-          Back
+          <FaArrowLeft className="mr-2" /> Back
         </button>
       </motion.div>
 
@@ -88,60 +100,79 @@ export default function MyProjectsForClients() {
           initial="hidden"
           animate="visible"
         >
-          {/* We filter out denied projects before mapping */}
           {projects
             .filter(project => project.status !== 'denied')
-            .map((project) => (
-            <motion.div
-              key={project._id}
-              className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 cursor-pointer"
-              variants={itemVariants}
-              whileHover={{ scale: 1.03, boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)" }}
-              onClick={() => toggleExpand(project._id)}
-            >
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-emerald-800">{project.title}</h2>
-                <div className="flex items-center gap-4">
-                  <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                    project.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' :
-                    project.status === 'denied' ? 'bg-red-100 text-red-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: expandedProjectId === project._id ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {expandedProjectId === project._id ? <FaChevronUp className="text-gray-500" /> : <FaChevronDown className="text-gray-500" />}
-                  </motion.div>
+            .map(project => (
+              <motion.div
+                key={project._id}
+                className="bg-white p-6 rounded-xl shadow-lg border border-gray-200"
+                variants={itemVariants}
+                whileHover={{ scale: 1.03, boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)" }}
+              >
+                <div
+                  className="flex justify-between items-center cursor-pointer"
+                  onClick={() => toggleExpand(project._id)}
+                >
+                  <h2 className="text-xl font-bold text-emerald-800">{project.title}</h2>
+                  <div className="flex items-center gap-4">
+                    <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                      project.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' :
+                      project.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                      'bg-yellow-100 text-yellow-700'
+                    }`}>
+                      {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                    </span>
+                    <motion.div
+                      animate={{ rotate: expandedProjectId === project._id ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {expandedProjectId === project._id ? (
+                        <FaChevronUp className="text-gray-500" />
+                      ) : (
+                        <FaChevronDown className="text-gray-500" />
+                      )}
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
 
-              <AnimatePresence>
-                {expandedProjectId === project._id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-4 text-sm text-gray-800 border-t pt-4 overflow-hidden"
-                  >
-                    <p className="mb-1"><strong className="font-semibold">Deadline:</strong> {new Date(project.deadline).toLocaleDateString()}</p>
-                    <p className="mb-1"><strong className="font-semibold">Description:</strong> {project.description}</p>
-                    <p className="mb-1"><strong className="font-semibold">Deliverables:</strong> {project.deliverables}</p>
-                    <p className="mb-1"><strong className="font-semibold">Budget:</strong> {project.budget}</p>
-                    {project.references && (
-                      <p className="mb-1"><strong className="font-semibold">References:</strong> {project.references}</p>
-                    )}
-                    {project.ndaRequired && (
-                      <p className="text-red-600 font-semibold mt-2">NDA Required</p>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
+                <AnimatePresence>
+                  {expandedProjectId === project._id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-4 text-sm text-gray-800 border-t pt-4 overflow-hidden"
+                    >
+                      <p className="mb-1"><strong>Deadline:</strong> {new Date(project.deadline).toLocaleDateString()}</p>
+                      <p className="mb-1"><strong>Description:</strong> {project.description}</p>
+                      <p className="mb-1"><strong>Deliverables:</strong> {project.deliverables}</p>
+                      <p className="mb-1"><strong>Budget:</strong> {project.budget}</p>
+                      {project.references && <p className="mb-1"><strong>References:</strong> {project.references}</p>}
+                      {project.ndaRequired && <p className="text-red-600 font-semibold mt-2">NDA Required</p>}
+
+                      {/* ✅ Mark as Completed Button */}
+                      {project.status !== 'completed' && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markAsCompleted(project._id);
+                          }}
+                          disabled={updatingId === project._id}
+                          className={`mt-4 px-4 py-2 rounded-lg text-white transition ${
+                            updatingId === project._id
+                              ? 'bg-gray-400 cursor-not-allowed'
+                              : 'bg-blue-500 hover:bg-blue-600'
+                          }`}
+                        >
+                          {updatingId === project._id ? 'Updating...' : 'Mark as Completed'}
+                        </button>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
         </motion.div>
       )}
     </motion.div>
