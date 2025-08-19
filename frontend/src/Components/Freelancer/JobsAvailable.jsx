@@ -17,7 +17,7 @@ export default function JobApplication() {
   useEffect(() => {
     // Fetch jobs from backend
     axios
-      .get("http://localhost:9000/api/job")
+      .get("https://freelance-client-3029.onrender.com/api/job")
       .then((res) => setJobs(res.data))
       .catch((err) => console.error(err));
   }, []);
@@ -51,7 +51,7 @@ export default function JobApplication() {
     }
 
     try {
-      await axios.post("http://localhost:9000/api/jobRequest/create", formData, {
+      await axios.post("https://freelance-client-3029.onrender.com/api/jobRequest/create", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

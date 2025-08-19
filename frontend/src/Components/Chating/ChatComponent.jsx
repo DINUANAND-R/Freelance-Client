@@ -16,7 +16,7 @@ export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
   const [targetUser, setTargetUser] = useState({ name: targetUserEmail.split('@')[0] });
 
   useEffect(() => {
-    socket.current = io('http://localhost:9000', { transports: ['websocket'] });
+    socket.current = io('https://freelance-client-3029.onrender.com', { transports: ['websocket'] });
 
     // Handle socket connection status
     socket.current.on('connect', () => {
@@ -38,7 +38,7 @@ export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
 
     // Fetch historical messages
     setIsLoading(true);
-    fetch(`http://localhost:9000/api/messages/${currentUserEmail}/${targetUserEmail}`)
+    fetch(`https://freelance-client-3029.onrender.com/api/messages/${currentUserEmail}/${targetUserEmail}`)
       .then(res => res.json())
       .then(data => setMessages(data))
       .catch(err => console.error('Message fetch failed:', err))

@@ -6,7 +6,7 @@ export default function RecentChats({ currentUserEmail }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:9000/api/messages/recent/${currentUserEmail}`)
+    fetch(`https://freelance-client-3029.onrender.com/api/messages/recent/${currentUserEmail}`)
       .then(res => res.json())
       .then(data => setUsers(data))
       .catch(err => console.error('Failed to fetch recent chats:', err));

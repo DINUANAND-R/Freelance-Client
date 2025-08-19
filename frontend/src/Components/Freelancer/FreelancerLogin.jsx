@@ -26,7 +26,7 @@ export default function FreelancerLogin() {
 
     try {
       const response = await axios.post(
-        'http://localhost:9000/api/freelancers/login',
+        'https://freelance-client-3029.onrender.com/api/freelancers/login',
         formData
       );
 

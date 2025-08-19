@@ -21,7 +21,7 @@ export default function ClientRequestPage() {
     }
     setLoading(true);
     axios
-      .get(`http://localhost:9000/api/project-requests/client/${email}`)
+      .get(`https://freelance-client-3029.onrender.com/api/project-requests/client/${email}`)
       .then((res) => {
         setRequests(res.data);
         setLoading(false);
@@ -57,7 +57,7 @@ export default function ClientRequestPage() {
   const processRequest = async (requestId, status) => {
     setShowModal(false);
     try {
-      await axios.put(`http://localhost:9000/api/project-requests/${requestId}/status`, {
+      await axios.put(`https://freelance-client-3029.onrender.com/api/project-requests/${requestId}/status`, {
         status,
       });
       setRequests((prev) =>

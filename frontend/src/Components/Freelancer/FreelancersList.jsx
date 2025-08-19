@@ -10,7 +10,7 @@ export default function FreelancersList() {
   const { name, email } = location.state || {};
 
   useEffect(() => {
-    axios.get('http://localhost:9000/api/freelancers/all')
+    axios.get('https://freelance-client-3029.onrender.com/api/freelancers/all')
       .then((res) => setFreelancers(res.data))
       .catch((err) => console.error('Failed to fetch freelancers', err));
   }, []);
@@ -89,7 +89,7 @@ export default function FreelancersList() {
               whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(0,0,0,0.2)" }}
             >
               <img
-                src={`http://localhost:9000/uploads/freelancers/${freelancer.profileImage}`}
+                src={`https://freelance-client-3029.onrender.com/uploads/freelancers/${freelancer.profileImage}`}
                 alt={freelancer.name}
                 className="w-full h-60 object-contain rounded-md mb-4 bg-emerald-800"
               />

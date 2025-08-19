@@ -25,7 +25,7 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:9000/admin/login', formData);
+      const response = await axios.post('https://freelance-client-3029.onrender.com/admin/login', formData);
       const { token, message } = response.data;
 
       // Optionally store token in localStorage

@@ -14,7 +14,7 @@ export default function AdminAllProjects() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const res = await axios.get('http://localhost:9000/api/projects/all');
+                const res = await axios.get('https://freelance-client-3029.onrender.com/api/projects/all');
                 setProjects(res.data);
             } catch (err) {
                 console.error('Error fetching projects:', err);

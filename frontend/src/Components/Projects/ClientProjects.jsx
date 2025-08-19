@@ -40,7 +40,7 @@ export default function ClientPostProject() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9000/api/projects/create', formData);
+      const response = await axios.post('https://freelance-client-3029.onrender.com/api/projects/create', formData);
       console.log('✅ Project posted successfully:', response.data);
 
       alert('Project posted and email sent successfully!');

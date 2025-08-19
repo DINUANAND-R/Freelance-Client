@@ -21,7 +21,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const API_BASE_URL = 'http://localhost:9000/api';
+const API_BASE_URL = 'https://freelance-client-3029.onrender.com/api';
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },

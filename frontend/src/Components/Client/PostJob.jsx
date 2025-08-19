@@ -34,7 +34,7 @@ export default function JobApplicationForm() {
         data.append(key, formData[key]);
       }
 
-      await axios.post("http://localhost:9000/api/job-applications", data, {
+      await axios.post("https://freelance-client-3029.onrender.com/api/job-applications", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

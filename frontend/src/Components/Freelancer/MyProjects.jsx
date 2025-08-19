@@ -7,7 +7,7 @@ import { FaGithub, FaLinkedin, FaArrowLeft, FaFolderOpen, FaMoneyBillWave, FaClo
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const API_BASE_URL = 'http://localhost:9000/api';
+const API_BASE_URL = 'https://freelance-client-3029.onrender.com/api';
 
 // Animation variants for the main page and its children
 const pageVariants = {

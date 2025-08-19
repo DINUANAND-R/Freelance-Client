@@ -5,7 +5,7 @@ import { FaLinkedin, FaGithub, FaArrowLeft, FaStar } from 'react-icons/fa';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, parseISO } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE_URL = 'http://localhost:9000/api';
+const API_BASE_URL = 'https://freelance-client-3029.onrender.com/api';
 
 const FreelancerProfile = () => {
   const location = useLocation();
@@ -56,7 +56,7 @@ const FreelancerProfile = () => {
       setLoadingPosts(true);
       try {
         // This is a placeholder API endpoint. You'll need to create this on your backend.
-          const res = await axios.get(`http://localhost:9000/api/post/freelancerPosts/${email}`);
+          const res = await axios.get(`https://freelance-client-3029.onrender.com/api/post/freelancerPosts/${email}`);
         setPosts(res.data);
       } catch (err) {
         console.error('Error fetching freelancer posts:', err);
@@ -157,7 +157,7 @@ const FreelancerProfile = () => {
     setSubmittingRating(true);
     setRatingMessage('');
     try {
-      await axios.post(`http://localhost:9000/api/rating/rate`, {
+      await axios.post(`https://freelance-client-3029.onrender.com/api/rating/rate`, {
         rating: userRating,
         comment: userComment,
         freelancerEmail: email,
@@ -221,7 +221,7 @@ const FreelancerProfile = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start mb-6">
             <div className="flex items-center gap-6">
               <img
-                src={`http://localhost:9000/uploads/freelancers/${profile.profileImage}`}
+                src={`https://freelance-client-3029.onrender.com/uploads/freelancers/${profile.profileImage}`}
                 alt="Profile"
                 className="w-28 h-28 rounded-full object-cover border-4 border-green-400 shadow-md"
               />

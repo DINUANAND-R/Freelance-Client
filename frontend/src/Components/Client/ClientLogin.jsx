@@ -14,7 +14,7 @@ export default function ClientLogin() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:9000/api/client/login',
+        'https://freelance-client-3029.onrender.com/api/client/login',
         { email, password },
         { withCredentials: true }
       );

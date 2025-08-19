@@ -62,8 +62,8 @@ export default function ClientSignUp() {
     }
 
     const apiUrl = isLogin
-      ? 'http://localhost:9000/api/client/login'
-      : 'http://localhost:9000/api/client/register';
+      ? 'https://freelance-client-3029.onrender.com/api/client/login'
+      : 'https://freelance-client-3029.onrender.com/api/client/register';
 
     try {
       setLoading(true);

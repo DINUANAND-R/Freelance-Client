@@ -29,10 +29,10 @@ export default function AdminDashboard() {
     const fetchAllData = async () => {
       try {
         const [freelancersRes, clientsRes, projectsRes, allProjectsRes] = await Promise.all([
-          axios.get('http://localhost:9000/api/admin/freelancers'),
-          axios.get('http://localhost:9000/api/admin/clients'),
-          axios.get('http://localhost:9000/api/admin/projects'),
-          axios.get('http://localhost:9000/api/projects/all')
+          axios.get('https://freelance-client-3029.onrender.com/api/admin/freelancers'),
+          axios.get('https://freelance-client-3029.onrender.com/api/admin/clients'),
+          axios.get('https://freelance-client-3029.onrender.com/api/admin/projects'),
+          axios.get('https://freelance-client-3029.onrender.com/api/projects/all')
         ]);
 
         setFreelancers(freelancersRes.data);

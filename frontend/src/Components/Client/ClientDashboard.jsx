@@ -15,7 +15,7 @@ export default function ClientDashboard() {
   useEffect(() => {
     if (email) {
       axios
-        .get(`http://localhost:9000/api/projects/client/${email}`)
+        .get(`https://freelance-client-3029.onrender.com/api/projects/client/${email}`)
         .then((res) => setProjects(res.data))
         .catch((err) => console.error('Failed to fetch projects:', err));
     }

@@ -66,7 +66,7 @@ export default function FreelancerSignup() {
         }
       });
 
-      const res = await axios.post('http://localhost:9000/api/freelancers/register', data, {
+      const res = await axios.post('https://freelance-client-3029.onrender.com/api/freelancers/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setMessage(res.data.message);

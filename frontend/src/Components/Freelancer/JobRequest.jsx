@@ -25,7 +25,7 @@ export default function JobRequest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:9000/api/jobrequests/create", formData);
+      await axios.post("https://freelance-client-3029.onrender.com/api/jobrequests/create", formData);
       alert("Job Request Sent ✅");
       setFormData({
         ClientName: "",
@@ -45,7 +45,7 @@ export default function JobRequest() {
   // Fetch requests
   const fetchRequests = async () => {
     try {
-      const res = await axios.get("http://localhost:9000/api/jobrequests");
+      const res = await axios.get("https://freelance-client-3029.onrender.com/api/jobrequests");
       setRequests(res.data);
     } catch (error) {
       console.error("❌ Error fetching requests:", error);

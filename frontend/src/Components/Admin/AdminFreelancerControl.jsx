@@ -17,7 +17,7 @@ export default function AdminFreelancerControl() {
 
     // Fetch freelancer data from the API
     useEffect(() => {
-        axios.get('http://localhost:9000/api/freelancers/all')
+        axios.get('https://freelance-client-3029.onrender.com/api/freelancers/all')
             .then((res) => {
                 setFreelancers(res.data);
                 setIsLoaded(true);
@@ -49,7 +49,7 @@ export default function AdminFreelancerControl() {
     const handleConfirmBlock = async () => {
         if (!freelancerToDelete) return;
         try {
-            await axios.delete(`http://localhost:9000/api/freelancers/delete/${freelancerToDelete.email}`);
+            await axios.delete(`https://freelance-client-3029.onrender.com/api/freelancers/delete/${freelancerToDelete.email}`);
             setFreelancers(prev => prev.filter(f => f.email !== freelancerToDelete.email));
             console.log(`Freelancer ${freelancerToDelete.email} has been deleted.`);
         } catch (err) {
@@ -171,7 +171,7 @@ export default function AdminFreelancerControl() {
                                     <div className="w-32 h-32 relative mb-6">
                                         <div className="absolute inset-0 bg-indigo-500 rounded-full opacity-20 blur-lg"></div>
                                         <img
-                                            src={`http://localhost:9000/uploads/freelancers/${freelancer.profileImage}`}
+                                            src={`https://freelance-client-3029.onrender.com/uploads/freelancers/${freelancer.profileImage}`}
                                             alt={freelancer.name}
                                             className="w-full h-full object-cover rounded-full relative ring-4 ring-indigo-600 ring-offset-4 ring-offset-slate-800 transition-transform duration-300 group-hover:scale-105"
                                         />
