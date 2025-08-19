@@ -55,14 +55,14 @@ router.post('/create', async (req, res) => {
       subject: 'Your project has been posted!',
       text: `Hello ${clientName},
 
-Your project "${title}" (ID: ${projectId}) has been successfully posted.
+        Your project "${title}" (ID: ${projectId}) has been successfully posted.
 
-Details:
-- Budget: ${budget}
-- Deadline: ${deadline}
+        Details:
+        - Budget: ${budget}
+        - Deadline: ${deadline}
 
-Thank you for using our service!
-`,
+        Thank you for using our service!
+        `,
     }).then(() => {
       console.log(`📧 Email sent to ${clientEmail}`);
     }).catch((err) => {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { FaArrowLeft } from 'react-icons/fa6';
+import { FaArrowLeft } from 'react-icons/fa'; // Corrected import path
 
 export default function ClientLogin() {
   const navigate = useNavigate();
@@ -31,41 +31,45 @@ export default function ClientLogin() {
     }
   };
 
+  // Variants for the main container animation
   const containerVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
-      y: 0,
+      scale: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
+        when: "beforeChildren",
         staggerChildren: 0.1,
       },
     },
   };
 
+  // Variants for individual form elements
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-400 flex items-center justify-center px-4 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-green-950 to-gray-950 flex items-center justify-center px-4 font-sans text-white">
       <motion.div
-        className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8"
+        className="w-full max-w-lg bg-green-900 rounded-3xl shadow-2xl p-8 md:p-12 border border-green-800"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
         <motion.button
           onClick={() => navigate(-1)}
-          className="mb-4 text-green-600 text-sm flex items-center gap-2 hover:underline"
+          className="mb-6 text-green-400 text-sm flex items-center gap-2 hover:text-green-300 transition-colors duration-200"
           variants={itemVariants}
         >
-          <FaArrowLeft /> Back
+          <FaArrowLeft className="text-lg" />
+          <span className="font-medium">Back</span>
         </motion.button>
 
         <motion.h2
-          className="text-3xl font-bold text-gray-800 mb-6 text-center"
+          className="text-4xl font-extrabold text-white mb-8 text-center"
           variants={itemVariants}
         >
           Client Login
@@ -73,7 +77,7 @@ export default function ClientLogin() {
 
         {error && (
           <motion.div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm"
+            className="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-6 text-sm"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -82,52 +86,53 @@ export default function ClientLogin() {
           </motion.div>
         )}
 
-        <motion.form className="space-y-6" onSubmit={handleSubmit} variants={itemVariants}>
-          <div>
-            <label className="block mb-1 text-sm text-gray-700">Email Address</label>
+        <motion.form className="space-y-6" onSubmit={handleSubmit} variants={containerVariants}>
+          <motion.div variants={itemVariants}>
+            <label className="block mb-2 text-sm text-green-200 font-medium">Email Address</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="client@example.com"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
             />
-          </div>
+          </motion.div>
 
-          <div>
-            <label className="block mb-1 text-sm text-gray-700">Password</label>
+          <motion.div variants={itemVariants}>
+            <label className="block mb-2 text-sm text-green-200 font-medium">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Enter password"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              placeholder="Enter your password"
+              className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
             />
-          </div>
+          </motion.div>
 
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
+            className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition-colors shadow-lg"
+            variants={itemVariants}
           >
             Login as Client
           </motion.button>
         </motion.form>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <motion.p className="mt-8 text-center text-sm text-green-400" variants={itemVariants}>
           Don't have an account?{' '}
           <motion.button
             onClick={() => navigate('/client/signup')}
-            className="text-green-600 hover:underline font-medium"
+            className="text-green-400 hover:underline font-medium"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Sign up here
           </motion.button>
-        </p>
+        </motion.p>
       </motion.div>
     </div>
   );

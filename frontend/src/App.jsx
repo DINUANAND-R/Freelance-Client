@@ -31,6 +31,11 @@ import AdminClientControl from './Components/Admin/AdminClientControl';
 import MyProjects from './Components/Freelancer/MyProjects';
 import FreelancerProfileToClient from './Components/Client/FreelancerProfileToView'
 import ClientProfile2 from './Components/Client/ClientProfile2';
+import PostJob from './Components/Client/PostJob';
+import JobPostForm from './Components/Client/JobPostForm';
+import JobRequest from './Components/Freelancer/JobRequest';
+import JobsAvailable from './Components/Freelancer/JobsAvailable';
+import JobRequestForClient from './Components/Client/JobRequestForClient';
 
 export default function App() {
   return (
@@ -64,6 +69,11 @@ export default function App() {
       <Route path='/freelancer/myprojects' element={<MyProjects/>}/>
       <Route path='/profile/freelancer' element={<FreelancerProfileToClient/>}/>
       <Route path='/freelancer/clientProfile' element={<ClientProfile2/>}/>
+      <Route path='/client/postjob' element={<PostJob/>}/>
+      <Route path='/client/jobpostform' element={<JobPostForm/>}/>
+      <Route path='/freelancer/jobRequest' element={<JobRequest/>}/>
+      <Route path='/freelancer/jobs' element={<JobsAvailable/>}/>
+      <Route path='/client/jobRequests' element={<JobRequestForClient/>}/>
     </Routes>
   );
 }

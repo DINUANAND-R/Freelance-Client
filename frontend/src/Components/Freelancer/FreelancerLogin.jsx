@@ -1,10 +1,7 @@
-// ✅ Corrected React Component: FreelancerLogin.jsx
-// Fixes: Corrected endpoint path, response structure handling
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function FreelancerLogin() {
   const navigate = useNavigate();
@@ -14,6 +11,8 @@ export default function FreelancerLogin() {
   });
 
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +21,9 @@ export default function FreelancerLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
     try {
       const response = await axios.post(
         'http://localhost:9000/api/freelancers/login',
@@ -41,69 +43,146 @@ export default function FreelancerLogin() {
     } catch (err) {
       console.error('Login error:', err);
       setError('Invalid email or password');
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Variants for the main container animation
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  // Variants for individual form elements
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center px-4 relative">
-      <button
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 to-gray-950 flex items-center justify-center px-4 relative font-sans text-white">
+      <motion.button
         onClick={() => navigate(-1)}
-        className="absolute top-6 left-6 flex items-center gap-2 text-green-700 font-semibold hover:text-green-900 transition"
+        className="absolute top-6 left-6 flex items-center gap-2 text-blue-400 font-semibold hover:text-blue-300 transition"
+        variants={itemVariants}
       >
-        <ArrowLeft className="w-6 h-6" />
+        {/* Replaced lucide-react ArrowLeft with inline SVG */}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left">
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </svg>
         Back
-      </button>
+      </motion.button>
 
-      <div className="bg-white shadow-2xl rounded-3xl p-8 max-w-md w-full animate-fade-in">
-        <h2 className="text-3xl font-bold text-green-700 text-center mb-6">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="bg-blue-900 shadow-2xl rounded-3xl p-8 max-w-md w-full border border-blue-800"
+      >
+        <motion.h2
+          className="text-4xl font-extrabold text-white text-center mb-6"
+          variants={itemVariants}
+        >
           Freelancer Login
-        </h2>
+        </motion.h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">Email</label>
+        <motion.form onSubmit={handleSubmit} className="space-y-6">
+          <motion.div variants={itemVariants}>
+            <label className="block mb-2 text-sm text-blue-200 font-medium">Email Address</label>
             <input
               type="email"
               name="email"
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:outline-none"
+              placeholder="Email Address"
+              className="w-full px-5 py-3 rounded-xl bg-blue-800 border border-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-white placeholder-blue-400"
             />
-          </div>
+          </motion.div>
 
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">Password</label>
+          <motion.div className="relative" variants={itemVariants}>
+            <label className="block mb-2 text-sm text-blue-200 font-medium">Password</label>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               required
               value={formData.password}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 focus:outline-none"
+              placeholder="Password"
+              className="w-full px-5 py-3 rounded-xl bg-blue-800 border border-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-white placeholder-blue-400"
             />
-          </div>
+            <motion.button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 mt-2 -translate-y-1/2 text-blue-500 hover:text-blue-300 transition-colors"
+              whileTap={{ scale: 0.9 }}
+            >
+              {showPassword ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-off">
+                  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                  <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                  <line x1="2" x2="22" y1="2" y2="22" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </motion.button>
+          </motion.div>
 
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+          {error && (
+            <motion.div
+              className="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {error}
+            </motion.div>
+          )}
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold text-lg hover:bg-green-700 transition duration-300"
+            disabled={loading}
+            className={`w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg ${
+              loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+            }`}
+            variants={itemVariants}
           >
-            Login
-          </button>
-        </form>
+            {loading ? 'Logging in...' : 'Login'}
+          </motion.button>
+        </motion.form>
 
-        <p className="text-center text-gray-600 mt-6">
+        <motion.p
+          className="text-center text-sm text-blue-400 mt-8"
+          variants={itemVariants}
+        >
           Don’t have an account?{' '}
-          <span
-            className="text-green-600 cursor-pointer font-medium hover:underline"
+          <motion.button
             onClick={() => navigate('/freelancer/SignUp')}
+            className="text-blue-400 hover:underline font-medium"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Sign up here
-          </span>
-        </p>
-      </div>
+          </motion.button>
+        </motion.p>
+      </motion.div>
     </div>
   );
 }

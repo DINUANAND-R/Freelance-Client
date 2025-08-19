@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa6';
 
 export default function ClientSignUp() {
   const navigate = useNavigate();
@@ -96,49 +95,57 @@ export default function ClientSignUp() {
     }
   };
 
+  // Variants for the main container animation
   const containerVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
-      y: 0,
+      scale: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
+        when: "beforeChildren",
         staggerChildren: 0.1,
       },
     },
   };
 
+  // Variants for individual form elements
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 to-green-400 flex items-center justify-center px-4 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-green-950 to-gray-950 flex items-center justify-center px-4 font-sans text-white">
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8"
+        className="w-full max-w-lg bg-green-900 rounded-3xl shadow-2xl p-8 md:p-12 border border-green-800"
       >
         <motion.button
           onClick={() => navigate(-1)}
-          className="mb-4 text-green-600 text-sm flex items-center gap-2 hover:underline"
+          className="mb-6 text-green-400 text-sm flex items-center gap-2 hover:text-green-300 transition-colors duration-200"
           variants={itemVariants}
         >
-          <FaArrowLeft /> Back
+          {/* Replaced react-icons with an inline SVG */}
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left">
+            <path d="m12 19-7-7 7-7" />
+            <path d="M19 12H5" />
+          </svg>
+          <span className="font-medium">Back</span>
         </motion.button>
 
         <motion.h2
-          className="text-3xl font-bold text-gray-800 mb-6 text-center"
+          className="text-4xl font-extrabold text-white mb-8 text-center"
           variants={itemVariants}
         >
-          {isLogin ? 'Client Login' : 'Client Signup'}
+          {isLogin ? 'Client Login' : 'Client Sign Up'}
         </motion.h2>
 
         {message && (
           <motion.div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm"
+            className="bg-red-900 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-6 text-sm"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -147,55 +154,55 @@ export default function ClientSignUp() {
           </motion.div>
         )}
 
-        <motion.form onSubmit={handleSubmit} className="space-y-4">
+        <motion.form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <>
               <motion.div variants={itemVariants}>
-                <label className="block mb-1 text-sm text-gray-700">Full Name</label>
+                <label className="block mb-2 text-sm text-green-200 font-medium">Full Name</label>
                 <input
                   type="text"
                   name="name"
                   placeholder="Full Name"
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-400 transition"
+                  className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
                 />
               </motion.div>
               <motion.div variants={itemVariants}>
-                <label className="block mb-1 text-sm text-gray-700">Address</label>
+                <label className="block mb-2 text-sm text-green-200 font-medium">Address</label>
                 <input
                   type="text"
                   name="address"
                   placeholder="Address"
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-400 transition"
+                  className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
                 />
               </motion.div>
               <motion.div variants={itemVariants}>
-                <label className="block mb-1 text-sm text-gray-700">LinkedIn Profile Link</label>
+                <label className="block mb-2 text-sm text-green-200 font-medium">LinkedIn Profile Link</label>
                 <input
                   type="url"
                   name="linkedin"
                   placeholder="LinkedIn Profile Link"
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-400 transition"
+                  className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
                 />
               </motion.div>
               <motion.div variants={itemVariants}>
-                <label className="block mb-1 text-sm text-gray-700">Profile Photo</label>
+                <label className="block mb-2 text-sm text-green-200 font-medium">Profile Photo</label>
                 <input
                   type="file"
                   name="photo"
                   accept="image/*"
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 text-sm text-gray-600 transition"
+                  className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 text-sm text-green-200 transition"
                 />
                 {photoPreview && (
-                  <div className="mt-4 text-center">
-                    <p className="text-sm text-gray-500 mb-2">Image Preview:</p>
+                  <div className="mt-6 text-center">
+                    <p className="text-sm text-green-400 mb-2 font-medium">Image Preview:</p>
                     <img
                       src={photoPreview}
                       alt="Profile Preview"
-                      className="mx-auto w-32 h-32 object-cover rounded-full shadow-md"
+                      className="mx-auto w-32 h-32 object-cover rounded-full shadow-md border-4 border-green-700"
                     />
                   </div>
                 )}
@@ -204,59 +211,74 @@ export default function ClientSignUp() {
           )}
 
           <motion.div variants={itemVariants}>
-            <label className="block mb-1 text-sm text-gray-700">Email Address</label>
+            <label className="block mb-2 text-sm text-green-200 font-medium">Email Address</label>
             <input
               type="email"
               name="email"
               placeholder="Email Address"
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-400 transition"
+              className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
             />
           </motion.div>
 
           <motion.div className="relative" variants={itemVariants}>
-            <label className="block mb-1 text-sm text-gray-700">Password</label>
+            <label className="block mb-2 text-sm text-green-200 font-medium">Password</label>
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
               placeholder="Password"
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-400 transition"
+              className="w-full px-5 py-3 rounded-xl bg-green-800 border border-green-700 focus:ring-2 focus:ring-green-500 transition-all duration-300 text-white placeholder-green-400"
             />
-            <button
+            <motion.button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-green-500"
+              className="absolute right-4 top-1/2 mt-2 -translate-y-1/2 text-green-500 hover:text-green-300 transition-colors"
+              whileTap={{ scale: 0.9 }}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+              {/* Inline SVG for the eye icon */}
+              {showPassword ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye-off">
+                  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                  <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                  <line x1="2" x2="22" y1="2" y2="22" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </motion.button>
           </motion.div>
 
           <motion.button
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={loading}
-            className={`w-full bg-green-600 text-white py-3 rounded-lg transition-all font-semibold shadow-lg ${
+            className={`w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg ${
               loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'
             }`}
+            variants={itemVariants}
           >
             {loading
               ? 'Processing...'
               : isLogin
               ? 'Login as Client'
-              : 'Signup as Client'}
+              : 'Sign Up as Client'}
           </motion.button>
         </motion.form>
 
-        <p className="text-center text-sm text-gray-600 mt-4">
+        <p className="text-center text-sm text-green-400 mt-8" variants={itemVariants}>
           {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
           <motion.button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-green-600 hover:underline font-medium"
+            className="text-green-400 hover:underline font-medium"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {isLogin ? 'Signup' : 'Login'}
+            {isLogin ? 'Sign up' : 'Login'}
           </motion.button>
         </p>
       </motion.div>

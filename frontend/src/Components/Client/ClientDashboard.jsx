@@ -87,6 +87,14 @@ export default function ClientDashboard() {
             </button>
             <button
               onClick={() =>
+                navigate('/client/jobRequests', { state: { clientEmail:email , name } })
+              }
+              className="hover:text-emerald-400 font-medium transition-colors"
+            >
+              Job Requests
+            </button>
+            <button
+              onClick={() =>
                 navigate('/client/myProjects', { state: { name, email } })
               }
               className="hover:text-emerald-400 font-medium transition-colors"
@@ -157,7 +165,7 @@ export default function ClientDashboard() {
           </motion.div>
 
           <motion.div
-            onClick={() => navigate('/freelancers', { state: { name, email } })}
+            onClick={() => navigate('/client/jobpostform', { state: { name, email } })}
             className="bg-white shadow-lg rounded-2xl p-8 cursor-pointer border border-gray-200"
             variants={cardHoverVariants}
             whileHover="hover"
@@ -166,7 +174,7 @@ export default function ClientDashboard() {
               <FaUserFriends className="text-emerald-500 text-4xl mb-4 mx-auto" />
             </motion.div>
             <h4 className="text-xl font-semibold text-emerald-900 mb-2">
-              Browse Freelancers
+              Post for Job
             </h4>
             <p className="text-gray-500 text-sm">
               Explore and shortlist freelancers for your tasks.

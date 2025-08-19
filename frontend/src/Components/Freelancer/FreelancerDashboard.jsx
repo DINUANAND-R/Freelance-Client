@@ -159,6 +159,7 @@ export default function FreelancerDashboard() {
           </div>
           <nav className="space-x-4 md:space-x-6 flex items-center">
             <button onClick={() => navigate('/allprojects', { state: { name, email } })} className="hover:text-sky-400 font-medium transition-colors hidden sm:block">Find Projects</button>
+            <button onClick={() => navigate('/freelancer/jobs', { state: { name, email } })} className="hover:text-sky-400 font-medium transition-colors hidden sm:block">Find Jobs</button>
             <button onClick={() => navigate('/clients', { state: { name, email } })} className="hover:text-sky-400 font-medium transition-colors hidden sm:block">Find Clients</button>
             <button onClick={() => navigate('/freelancer/myprojects', { state: { name, email } })} className="hover:text-sky-400 font-medium transition-colors hidden sm:block">My Projects</button>
             <button onClick={() => navigate('/freelancer/profile', { state: { name, email } })} className="hover:text-sky-400 font-medium transition-colors hidden sm:block">Profile</button>

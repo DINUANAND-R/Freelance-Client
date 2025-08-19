@@ -59,6 +59,12 @@ app.use('/api/post',freelancerPost);
 const RatingRouter = require('./Routers/RatingRouter');
 app.use('/api/rating',RatingRouter);
 
+const Job =require('./Routers/JobRouter');
+app.use('/api/job',Job);
+
+const JobRequest = require('./Routers/JobRequestRouter');
+app.use('/api/jobRequest',JobRequest);
+
 
 // Socket.IO real-time messaging
 io.on('connection', (socket) => {
