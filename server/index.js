@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app); // Wrap app in HTTP server for Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: 'https://freelance-client-hazel.vercel.app/',
     methods: ['GET', 'POST'],
     credentials: true
   }
