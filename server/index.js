@@ -10,10 +10,18 @@ const Message = require('./Modules/Message'); // Adjust model path if needed
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app); // Wrap app in HTTP server for Socket.IO
+const server = http.createServer(app);
+
+// ✅ Allowed origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://freelance-client-hazel.vercel.app"
+];
+
+// ✅ Socket.IO with multiple origins
 const io = new Server(server, {
   cors: {
-    origin: 'https://freelance-client-hazel.vercel.app/',
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -22,13 +30,22 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 9000;
 const MONGO_URL = process.env.MONGO_URL;
 
-// Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+// ✅ Middleware
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads/freelancerPosts', express.static(path.join(__dirname, 'uploads', 'freelancerPosts')));
 
-// Routes
+// ✅ Routes
 const clientRoutes = require('./Routers/ClientRouter');
 app.use('/api/client', clientRoutes);
 
@@ -51,22 +68,21 @@ const adminLogin = require('./Routers/AdminLoginRouter');
 app.use('/admin', adminLogin);
 
 const email = require('./Routers/EmailRouter');
-app.use('/api/email',email);
+app.use('/api/email', email);
 
 const freelancerPost = require('./Routers/FreelancerPostRouter');
-app.use('/api/post',freelancerPost);
+app.use('/api/post', freelancerPost);
 
 const RatingRouter = require('./Routers/RatingRouter');
-app.use('/api/rating',RatingRouter);
+app.use('/api/rating', RatingRouter);
 
-const Job =require('./Routers/JobRouter');
-app.use('/api/job',Job);
+const Job = require('./Routers/JobRouter');
+app.use('/api/job', Job);
 
 const JobRequest = require('./Routers/JobRequestRouter');
-app.use('/api/jobRequest',JobRequest);
+app.use('/api/jobRequest', JobRequest);
 
-
-// Socket.IO real-time messaging
+// ✅ Socket.IO real-time messaging
 io.on('connection', (socket) => {
   console.log('📡 New user connected:', socket.id);
 
@@ -76,7 +92,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async ({ senderEmail, receiverEmail, messageText }) => {
-    // Prevent sending empty messages or invalid data
     if (!senderEmail || !receiverEmail || !messageText?.trim()) {
       console.warn('⚠️ Skipping empty or malformed message');
       return;
@@ -86,7 +101,6 @@ io.on('connection', (socket) => {
       const newMessage = new Message({ senderEmail, receiverEmail, messageText });
       await newMessage.save();
 
-      // Send message to receiver room
       io.to(receiverEmail).emit('receiveMessage', newMessage);
     } catch (err) {
       console.error('❌ Failed to save/send message:', err.message);
@@ -98,7 +112,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// MongoDB Connection
+// ✅ MongoDB Connection
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
