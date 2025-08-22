@@ -20,8 +20,7 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 9000;
 const MONGO_URL = process.env.MONGO_URL;
 
-// Allow multiple frontends via env (comma-separated), plus sensible defaults
-// Example: FRONTEND_URLS=https://freelance-client-hazel.vercel.app,http://localhost:5173
+// Default + ENV allowed origins
 const defaultOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
@@ -29,33 +28,27 @@ const defaultOrigins = [
 ];
 const envOrigins = (process.env.FRONTEND_URLS || '')
   .split(',')
-  .map(s => s.trim())
+  .map((s) => s.trim())
   .filter(Boolean);
 
 const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 // --- Middleware ---
-app.set('trust proxy', 1); // good practice on Render/Heroku etc.
+app.set('trust proxy', 1);
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow non-browser clients or same-origin (no Origin header)
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, true); // allow server-to-server or curl
     if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error(`Not allowed by CORS: ${origin}`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'X-Requested-With',
-  ],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 };
 
 app.use(cors(corsOptions));
-// Handle preflight quickly
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions)); // preflight support
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -69,7 +62,7 @@ const io = new Server(server, {
   },
 });
 
-// --- File Uploads (Multer) ---
+// --- File Uploads ---
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -85,7 +78,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Static serving for uploaded files
 app.use('/uploads', express.static(uploadsDir));
 app.use(
   '/uploads/freelancerPosts',
@@ -141,7 +133,7 @@ app.use('/api/jobRequest', JobRequest);
 const TaskRouter = require('./Routers/TaskRouter');
 app.use('/api/tasks', TaskRouter);
 
-// --- Upload API (saves a file message + emits to rooms by email) ---
+// --- Upload API ---
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
 
@@ -167,10 +159,14 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     io.to(senderEmail).emit('receiveFileMessage', newFileMessage);
     io.to(receiverEmail).emit('receiveFileMessage', newFileMessage);
 
-    res.status(200).json({ success: true, message: 'File uploaded and message saved.' });
+    res
+      .status(200)
+      .json({ success: true, message: 'File uploaded and message saved.' });
   } catch (err) {
     console.error('❌ Failed to save file message:', err);
-    res.status(500).json({ success: false, message: 'Internal server error.' });
+    res
+      .status(500)
+      .json({ success: false, message: 'Internal server error.' });
   }
 });
 
@@ -218,10 +214,11 @@ io.on('connection', (socket) => {
     }
   });
 
-  // --- Simple call signaling events ---
+  // --- Simple call signaling ---
   socket.on('call-request', ({ targetUserEmail, callerEmail }) => {
     const targetSocketId = emailToSocketIdMap.get(targetUserEmail);
-    if (targetSocketId) io.to(targetSocketId).emit('call-incoming', { callerEmail });
+    if (targetSocketId)
+      io.to(targetSocketId).emit('call-incoming', { callerEmail });
   });
 
   socket.on('call-accepted', ({ targetUserEmail }) => {
@@ -236,17 +233,24 @@ io.on('connection', (socket) => {
 
   socket.on('call-user', ({ targetUserEmail, signal, callerEmail }) => {
     const targetSocketId = emailToSocketIdMap.get(targetUserEmail);
-    if (targetSocketId) io.to(targetSocketId).emit('call-made', { signal, callerEmail });
+    if (targetSocketId)
+      io
+        .to(targetSocketId)
+        .emit('call-made', { signal, callerEmail });
   });
 
   socket.on('make-answer', ({ signal, to }) => {
     const targetSocketId = emailToSocketIdMap.get(to);
-    if (targetSocketId) io.to(targetSocketId).emit('answer-made', { signal, answererEmail: to });
+    if (targetSocketId)
+      io
+        .to(targetSocketId)
+        .emit('answer-made', { signal, answererEmail: to });
   });
 
   socket.on('ice-candidate', ({ targetUserEmail, candidate }) => {
     const targetSocketId = emailToSocketIdMap.get(targetUserEmail);
-    if (targetSocketId) io.to(targetSocketId).emit('ice-candidate', { candidate });
+    if (targetSocketId)
+      io.to(targetSocketId).emit('ice-candidate', { candidate });
   });
 
   socket.on('end-call', ({ targetUserEmail }) => {
@@ -266,7 +270,10 @@ io.on('connection', (socket) => {
       }
     }
     if (userEmail) {
-      socket.broadcast.emit('userStatus', { email: userEmail, isOnline: false });
+      socket.broadcast.emit('userStatus', {
+        email: userEmail,
+        isOnline: false,
+      });
     }
   });
 });
@@ -285,10 +292,12 @@ mongoose
     process.exit(1);
   });
 
-// --- Error handlers (optional but recommended) ---
+// --- Error handler ---
 app.use((err, req, res, next) => {
   if (err?.message?.startsWith('Not allowed by CORS')) {
-    return res.status(403).json({ error: 'CORS blocked', originTried: req.headers.origin });
+    return res
+      .status(403)
+      .json({ error: 'CORS blocked', originTried: req.headers.origin });
   }
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal Server Error' });
