@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.MAIL_PASS
   }
 });
+
 // ===================== CREATE PROJECT =====================
 router.post('/create', async (req, res) => {
   try {
@@ -69,7 +70,6 @@ router.post('/create', async (req, res) => {
       console.error('❌ Failed to send email:', err);
     });
 
-    // Send response immediately
     res.status(201).json({ message: '✅ Project posted successfully', project: newProject });
   } catch (error) {
     console.error('❌ Error posting project:', error);
@@ -88,8 +88,8 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// ===================== GET PROJECT BY ID =====================
-router.get('/:id', async (req, res) => {
+// ===================== GET PROJECT BY Mongo _id =====================
+router.get('/mongo/:id', async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
     if (!project) {
@@ -97,8 +97,22 @@ router.get('/:id', async (req, res) => {
     }
     res.status(200).json(project);
   } catch (error) {
-    console.error('❌ Error fetching project by ID:', error);
+    console.error('❌ Error fetching project by _id:', error);
     res.status(500).json({ error: 'Failed to fetch project' });
+  }
+});
+
+// ===================== GET PROJECT BY Custom projectId =====================
+router.get("/project/:projectId", async (req, res) => {
+  const { projectId } = req.params;
+  try {
+    const project = await Project.findOne({ projectId });
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -126,8 +140,8 @@ router.get('/project-status/:email', async (req, res) => {
     };
 
     projects.forEach((project) => {
-      if (project.status === 'Completed') counts.completed++;
-      else if (project.status === 'Accepted') counts.accepted++;
+      if (project.status.toLowerCase() === 'completed') counts.completed++;
+      else if (project.status.toLowerCase() === 'accepted') counts.accepted++;
       else counts.pending++;
     });
 
@@ -138,14 +152,15 @@ router.get('/project-status/:email', async (req, res) => {
   }
 });
 
+// ===================== GET RECENT PROJECTS =====================
 router.get('/client/recent/:email', async (req, res) => {
   const clientEmail = req.params.email;
 
   try {
     const recentProjects = await Project.find({ clientEmail })
-      .sort({ createdAt: -1 }) // newest first
+      .sort({ createdAt: -1 })
       .limit(5)
-      .select('title status budget timeline deadline deliverables createdAt') // select fields you want
+      .select('title status budget timeline deadline deliverables createdAt')
       .lean();
 
     res.json(recentProjects);
@@ -155,5 +170,22 @@ router.get('/client/recent/:email', async (req, res) => {
   }
 });
 
+// Example in Express.js
+router.put('/by-project-id/:projectId/complete', async (req, res) => {
+  const { projectId } = req.params;
+  try {
+    const project = await Project.findOneAndUpdate(
+      { projectId: projectId },
+      { $set: { status: 'completed' } },
+      { new: true }
+    );
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
 
 module.exports = router;

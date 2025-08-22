@@ -28,15 +28,18 @@ const upload = multer({ storage });
 // 📌 POST: Create new freelancer post
 router.post('/create', upload.single('file'), async (req, res) => {
   try {
-    const { freelancerName, freelancerEmail, title, description } = req.body;
+    // Correctly destructure name and email from req.body
+    const { name, email, title, description } = req.body;
 
-    if (!freelancerName || !freelancerEmail || !title) {
+    // Check for the correct variables in the validation
+    if (!name || !email || !title) {
       return res.status(400).json({ message: 'Name, email, and title are required' });
     }
 
+    // Use the correct variables to create the new post
     const newPost = new FreelancerPost({
-      freelancerName,
-      freelancerEmail,
+      freelancerName: name, // Map the 'name' from req.body to 'freelancerName' in the schema
+      freelancerEmail: email, // Map the 'email' from req.body to 'freelancerEmail' in the schema
       title,
       description,
       file: req.file ? `/uploads/freelancerPosts/${req.file.filename}` : null

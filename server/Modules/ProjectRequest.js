@@ -1,13 +1,25 @@
 // models/ProjectRequest.js
 const mongoose = require('mongoose');
 
+// Define a sub-schema for the team member
+const teamMemberSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  }
+});
+
 const projectRequestSchema = new mongoose.Schema({
   freelancerName: {
     type: String,
     required: true,
   },
   projectId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Project',
     required: true,
   },
@@ -27,15 +39,20 @@ const projectRequestSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  projectTitle:{
+  projectTitle: {
     type: String,
     required: true,
   },
-   status: {
+  status: {
     type: String,
     enum: ['pending', 'accepted', 'denied'],
     default: 'pending',
   },
+  teamMeets: {
+    // Change this to an array of objects with email and name
+    type: [teamMemberSchema],
+    default: [],
+  }
 });
 
 module.exports = mongoose.model('ProjectRequest', projectRequestSchema);
