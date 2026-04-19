@@ -11,7 +11,7 @@ router.post('/send', async (req, res) => {
   }
 
   try {
-    const message = new Message({ senderEmail, receiverEmail, messageText });
+    const message = new Message({ senderEmail, receiverEmail, messageText, type: 'text' });
     await message.save();
     res.status(201).json(message);
   } catch (err) {

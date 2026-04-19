@@ -1,0 +1,19 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment files
+.env
+.env.*
+
+# Git
+.git/
+.gitignore
+README.md
+
+# Editor metadata
+.vscode/
+*.swp
+*.DS_Store

@@ -3,7 +3,15 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const bcrypt = require('bcrypt');
+const path = require('path');
+const fs = require('fs');
 const Freelancer = require('../Modules/FreelancerModule');
+
+// Ensure upload directory exists
+const freelancerUploadDir = path.join(__dirname, '..', 'uploads', 'freelancers');
+if (!fs.existsSync(freelancerUploadDir)) {
+  fs.mkdirSync(freelancerUploadDir, { recursive: true });
+}
 
 // Multer setup for file upload
 const storage = multer.diskStorage({
@@ -14,7 +22,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 // Register route
 router.post('/register', upload.single('profileImage'), async (req, res) => {

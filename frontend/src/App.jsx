@@ -1,6 +1,5 @@
-// App.jsx
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import FreelancersList from './Components/Freelancer/FreelancersList';
 import FreelancerDashboar from './Components/Freelancer/FreelancerDashboard';
 import ClientDashboard from './Components/Client/ClientDashboard';
@@ -37,6 +36,13 @@ import JobRequest from './Components/Freelancer/JobRequest';
 import JobsAvailable from './Components/Freelancer/JobsAvailable';
 import JobRequestForClient from './Components/Client/JobRequestForClient';
 
+// Helper component to pass location state email to RecentChats
+function RecentChatsWrapper() {
+  const location = useLocation();
+  const { email } = location.state || {};
+  return <RecentChats currentUserEmail={email || ''} />;
+}
+
 export default function App() {
   return (
     <Routes>
@@ -56,14 +62,14 @@ export default function App() {
       <Route path='/about' element={<About/>}/>
       <Route path='/contact' element={<Contact/>}/>
       <Route path='/allProjects' element={<AllProjects/>}/>
-      <Route path='/requesrForClient' element={<ClientRequestPage/>}/>
+      <Route path='/requestForClient' element={<ClientRequestPage/>}/>
       <Route path='/client/myProjects' element={<MyProjectsForClients/>}/>
       <Route path='/admin/dashboard' element={<AdminDashboard/>}/>
       <Route path='/admin/freelancer/control' element={<AdminFreelancerControl/>}/>
       <Route path='/admin/client/control' element={<AdminClientControl/>}/>
       <Route path='/client/profile' element={<ClientProfile/>}/>
       <Route path='/freelancer/profile' element={<FreelancerProfile/>}/>
-      <Route path='/chat/recent' element={<RecentChats  currentUserEmail='dinuanandcr.23cse@kongu.edu'/>}/>
+      <Route path='/chat/recent' element={<RecentChatsWrapper />}/>
       <Route path='/freelancer/post' element={<FreelancerPost/>}/>
       <Route path='/admin/projects' element={<AdminAllProjects/>}/>
       <Route path='/freelancer/myprojects' element={<MyProjects/>}/>

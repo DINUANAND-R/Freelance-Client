@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+
+# Environment files (injected via docker-compose)
+.env
+.env.*
+
+# Uploaded files (mounted as a Docker volume)
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Git
+.git/
+.gitignore
+
+# Editor metadata
+.vscode/
+*.swp
+*.DS_Store

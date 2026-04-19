@@ -5,14 +5,21 @@ import { motion } from 'framer-motion';
 
 export default function FreelancersList() {
   const [freelancers, setFreelancers] = useState([]);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { name, email } = location.state || {};
 
   useEffect(() => {
-    axios.get('https://freelance-client-3029.onrender.com/api/freelancers/all')
-      .then((res) => setFreelancers(res.data))
-      .catch((err) => console.error('Failed to fetch freelancers', err));
+    axios.get('http://localhost:9000/api/freelancers/all')
+      .then((res) => {
+        setFreelancers(res.data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch freelancers', err);
+        setError('Could not load freelancers. Please try again later.');
+      });
   }, []);
 
   const handleConnect = (freelancer) => {
@@ -78,8 +85,21 @@ export default function FreelancersList() {
 
       <motion.main className="flex-grow px-6" variants={itemVariants}>
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-100">Available Freelancers</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
-          {freelancers.map((freelancer, index) => (
+        {error ? (
+          <div className="text-center py-16">
+            <p className="text-red-400 text-lg font-medium">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-semibold"
+            >
+              Retry
+            </button>
+          </div>
+        ) : freelancers.length === 0 ? (
+          <p className="text-center text-emerald-400 mt-10">No freelancers found.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
+            {freelancers.map((freelancer, index) => (
             <motion.div
               key={freelancer._id}
               className="w-80 bg-emerald-900 shadow-md rounded-xl overflow-hidden p-6 border border-emerald-800"
@@ -89,7 +109,7 @@ export default function FreelancersList() {
               whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(0,0,0,0.2)" }}
             >
               <img
-                src={`https://freelance-client-3029.onrender.com/uploads/freelancers/${freelancer.profileImage}`}
+                src={`http://localhost:9000/uploads/freelancers/${freelancer.profileImage}`}
                 alt={freelancer.name}
                 className="w-full h-60 object-contain rounded-md mb-4 bg-emerald-800"
               />
@@ -149,7 +169,8 @@ export default function FreelancersList() {
               </div>
             </motion.div>
           ))}
-        </div>
+          </div>
+        )}
       </motion.main>
 
       <motion.footer

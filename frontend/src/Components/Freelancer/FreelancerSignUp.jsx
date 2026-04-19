@@ -66,11 +66,12 @@ export default function FreelancerSignup() {
         }
       });
 
-      const res = await axios.post('https://freelance-client-3029.onrender.com/api/freelancers/register', data, {
+      const res = await axios.post('http://localhost:9000/api/freelancers/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setMessage(res.data.message);
-      navigate('/freelancer/dashboard',{state:{name:formData.name,email:formData.email}});
+      // Redirect to login so the user can authenticate properly
+      navigate('/freelancer/Login');
     } catch (err) {
       console.error('Registration error:', err);
       setMessage(err.response?.data?.message || 'Registration failed.');

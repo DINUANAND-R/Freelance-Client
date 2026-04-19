@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const {
   createJobRequest,
   getJobRequests,
@@ -10,6 +11,12 @@ const {
 } = require("../Controllers/JobRequestController");
 
 const router = express.Router();
+
+// ✅ Ensure upload directory exists
+const resumeUploadDir = path.join(__dirname, "..", "uploads", "resumes");
+if (!fs.existsSync(resumeUploadDir)) {
+  fs.mkdirSync(resumeUploadDir, { recursive: true });
+}
 
 // ✅ Configure Multer storage
 const storage = multer.diskStorage({
@@ -22,7 +29,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 // ✅ Routes
 router.post("/create", upload.single("resume"), createJobRequest);

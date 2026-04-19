@@ -1,7 +1,8 @@
-import Freelancer from '../Modules/FreelancerModule.js';
-import bcrypt from 'bcrypt';
-import nodemailer from 'nodemailer';
-import path from 'path';
+// Controllers/FreelancerController.js
+const Freelancer = require('../Modules/FreelancerModule');
+const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const path = require('path');
 
 // ✅ Configure Nodemailer (Gmail SMTP)
 const transporter = nodemailer.createTransport({
@@ -14,7 +15,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-export const registerFreelancer = async (req, res) => {
+exports.registerFreelancer = async (req, res) => {
   try {
     const { name, email, password, skills, linkedin, github } = req.body;
     const profileImage = req.file ? path.normalize(req.file.filename) : null;
@@ -57,7 +58,7 @@ export const registerFreelancer = async (req, res) => {
   }
 };
 
-export const loginFreelancer = async (req, res) => {
+exports.loginFreelancer = async (req, res) => {
   const { email, password } = req.body;
 
   try {

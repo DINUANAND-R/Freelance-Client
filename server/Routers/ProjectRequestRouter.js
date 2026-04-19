@@ -107,7 +107,7 @@ router.put('/:id/status', async (req, res) => {
 
         // Optional: also update Project table if needed
         if (status === 'accepted') {
-            await Project.findByIdAndUpdate(request.projectId, { status }, { new: true });
+            await Project.findOneAndUpdate({ projectId: request.projectId }, { status }, { new: true });
         }
 
         res.status(200).json({ message: `Request ${status} successfully.`, request });
@@ -327,9 +327,5 @@ router.get('/freelancer/project/team/:projectId', async (req, res) => {
     res.status(500).json({ success: false, error: "An unexpected server error occurred." });
   }
 });
-
-module.exports = router;
-
-
 
 module.exports = router;

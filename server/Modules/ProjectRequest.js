@@ -45,7 +45,7 @@ const projectRequestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'denied'],
+    enum: ['pending', 'accepted', 'denied', 'completed'],
     default: 'pending',
   },
   teamMeets: {

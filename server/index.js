@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: process.env.CLIENT_URL || 'http://localhost:5173',
         methods: ['GET', 'POST'],
         credentials: true
     }
@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 9000;
 const MONGO_URL = process.env.MONGO_URL;
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -85,6 +85,11 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 // Serve uploaded files statically
 app.use('/uploads', express.static(uploadsDir));
 app.use('/uploads/freelancerPosts', express.static(path.join(__dirname, 'uploads', 'freelancerPosts')));
+
+// Health check endpoint (used by Docker HEALTHCHECK)
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Routes
 const clientRoutes = require('./Routers/ClientRouter');

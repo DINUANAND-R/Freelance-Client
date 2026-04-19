@@ -1,0 +1,16 @@
+# Git
+.git/
+.gitignore
+
+# Editor metadata
+.vscode/
+.idea/
+*.swp
+*.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+Thumbs.db
