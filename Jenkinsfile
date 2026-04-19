@@ -1,38 +1,29 @@
-
 pipeline {
     agent any
 
     stages {
 
-        stage('Clone') {
+        stage('Clone Code') {
             steps {
                 git branch: 'local', url: 'https://github.com/DINUANAND-R/Freelance-Client.git'
             }
         }
 
-        stage('Build Backend Image') {
+        stage('Stop Old Containers') {
             steps {
-                sh 'docker build -t backend ./server'
+                sh 'docker compose down || true'
             }
         }
 
-        stage('Build Frontend Image') {
+        stage('Build & Start Services') {
             steps {
-                sh 'docker build -t frontend ./client'
+                sh 'docker compose up --build -d'
             }
         }
 
-        stage('Run Containers') {
+        stage('Show Running Containers') {
             steps {
-                sh '''
-                docker stop backend || true
-                docker rm backend || true
-                docker run -d -p 5000:5000 --name backend backend
-
-                docker stop frontend || true
-                docker rm frontend || true
-                docker run -d -p 3000:3000 --name frontend frontend
-                '''
+                sh 'docker ps'
             }
         }
     }
