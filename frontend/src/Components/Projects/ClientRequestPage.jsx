@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowLeft, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import axiosInstance from '../../utils/axiosInstance';
+import { getUser } from '../../utils/auth';
 
 export default function ClientRequestPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { email: email, name } = location.state || {};
+  const storedUser = getUser();
+  const { email, name } = location.state || storedUser || {};
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -20,8 +22,8 @@ export default function ClientRequestPage() {
       return;
     }
     setLoading(true);
-    axios
-      .get(`https://freelance-client-3029.onrender.com/api/project-requests/client/${email}`)
+    axiosInstance
+      .get(`/api/project-requests/client/${email}`)
       .then((res) => {
         setRequests(res.data);
         setLoading(false);
@@ -57,9 +59,7 @@ export default function ClientRequestPage() {
   const processRequest = async (requestId, status) => {
     setShowModal(false);
     try {
-      await axios.put(`https://freelance-client-3029.onrender.com/api/project-requests/${requestId}/status`, {
-        status,
-      });
+      await axiosInstance.put(`/api/project-requests/${requestId}/status`, { status });
       setRequests((prev) =>
         prev.map((r) =>
           r._id === requestId ? { ...r, status } : r
@@ -67,7 +67,6 @@ export default function ClientRequestPage() {
       );
     } catch (err) {
       console.error(`Error ${status} request:`, err);
-      // Implement a custom error toast/notification here
     }
   };
 

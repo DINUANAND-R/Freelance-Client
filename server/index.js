@@ -48,7 +48,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // preflight support
+app.options('/*path', cors(corsOptions)); // preflight support (Express 5 wildcard)
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));

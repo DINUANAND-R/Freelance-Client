@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { saveAuth } from '../../utils/auth';
 
 export default function FreelancerLogin() {
   const navigate = useNavigate();
@@ -26,23 +27,25 @@ export default function FreelancerLogin() {
 
     try {
       const response = await axios.post(
-        'https://freelance-client-3029.onrender.com/api/freelancers/login',
+        'http://localhost:9000/api/freelancers/login',
         formData
       );
 
-      const { freelancer } = response.data;
-      const { name, email, profileImage } = freelancer;
+      const { token, freelancer } = response.data;
+
+      // Persist auth data so dashboards survive page refresh
+      saveAuth(token, 'freelancer', freelancer);
 
       navigate('/freelancer/dashboard', {
         state: {
-          name,
-          email,
-          image: profileImage,
+          name: freelancer.name,
+          email: freelancer.email,
+          image: freelancer.profileImage,
         },
       });
     } catch (err) {
       console.error('Login error:', err);
-      setError('Invalid email or password');
+      setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }

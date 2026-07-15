@@ -2,32 +2,41 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { FaArrowLeft } from 'react-icons/fa'; // Corrected import path
+import { FaArrowLeft } from 'react-icons/fa';
+import { saveAuth } from '../../utils/auth';
 
 export default function ClientLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     try {
       const res = await axios.post(
-        'https://freelance-client-3029.onrender.com/api/client/login',
+        'http://localhost:9000/api/client/login',
         { email, password },
         { withCredentials: true }
       );
-      console.log('✅ Login successful:', res.data);
+
+      const { token, client } = res.data;
+      saveAuth(token, 'client', client);
+
       navigate('/client/dashboard', {
         state: {
-          name: res.data.client.name,
-          email: res.data.client.email
+          name: client.name,
+          email: client.email,
         },
       });
     } catch (err) {
       console.error('❌ Login error:', err.response?.data?.message || err.message);
       setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 

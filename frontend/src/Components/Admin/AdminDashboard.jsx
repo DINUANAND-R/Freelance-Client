@@ -5,6 +5,7 @@ import axios from 'axios';
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import { getUser, getToken, clearAuth } from '../../utils/auth';
 
 const COLORS = ['#1E88E5', '#43A047', '#FFB300']; // Blue, Green, Orange
 
@@ -21,18 +22,21 @@ export default function AdminDashboard() {
   });
 
   const location = useLocation();
-  const { email } = location.state || { email: 'admin@example.com' };
+  const storedAdmin = getUser();
+  const { email } = location.state || storedAdmin || { email: 'admin@example.com' };
   const navigate = useNavigate();
-  const adminName = "Admin";
+  const adminName = storedAdmin?.name || 'Admin';
 
   useEffect(() => {
     const fetchAllData = async () => {
+      const token = getToken();
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
       try {
         const [freelancersRes, clientsRes, projectsRes, allProjectsRes] = await Promise.all([
-          axios.get('https://freelance-client-3029.onrender.com/api/admin/freelancers'),
-          axios.get('https://freelance-client-3029.onrender.com/api/admin/clients'),
-          axios.get('https://freelance-client-3029.onrender.com/api/admin/projects'),
-          axios.get('https://freelance-client-3029.onrender.com/api/projects/all')
+          axios.get('http://localhost:9000/api/admin/freelancers', { headers }),
+          axios.get('http://localhost:9000/api/admin/clients', { headers }),
+          axios.get('http://localhost:9000/api/admin/projects', { headers }),
+          axios.get('http://localhost:9000/api/projects/all'),
         ]);
 
         setFreelancers(freelancersRes.data);
@@ -68,8 +72,7 @@ export default function AdminDashboard() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearAuth();
     navigate('/', { replace: true });
   };
 

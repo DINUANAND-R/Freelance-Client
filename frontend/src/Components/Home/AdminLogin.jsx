@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { saveAuth } from '../../utils/auth';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -25,14 +26,13 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const response = await axios.post('https://freelance-client-3029.onrender.com/admin/login', formData);
-      const { token, message } = response.data;
+      const response = await axios.post('http://localhost:9000/admin/login', formData);
+      const { token, admin } = response.data;
 
-      // Optionally store token in localStorage
-      localStorage.setItem('adminToken', token);
+      // Persist auth data consistently across the app
+      saveAuth(token, 'admin', admin);
 
-      console.log(message);
-      navigate('/admin/dashboard', { state: { email: formData.email } });
+      navigate('/admin/dashboard', { state: { email: admin.email } });
     } catch (err) {
       console.error('Login error:', err);
       setError(err.response?.data?.message || 'Login failed');

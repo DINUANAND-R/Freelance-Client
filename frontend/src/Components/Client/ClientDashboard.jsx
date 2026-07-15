@@ -3,19 +3,22 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { FaUserFriends, FaPlusCircle, FaCog, FaGithub, FaLinkedin } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { getUser, clearAuth } from '../../utils/auth';
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
+  // Prefer location.state (just logged in), fall back to localStorage (page refresh)
+  const storedUser = getUser();
   const { name, email } =
-    location.state || JSON.parse(localStorage.getItem('client')) || {};
+    location.state || storedUser || {};
 
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     if (email) {
       axios
-        .get(`https://freelance-client-3029.onrender.com/api/projects/client/${email}`)
+        .get(`http://localhost:9000/api/projects/client/${email}`)
         .then((res) => setProjects(res.data))
         .catch((err) => console.error('Failed to fetch projects:', err));
     }
@@ -50,8 +53,8 @@ export default function ClientDashboard() {
 
   // Logout handler to clear client info and navigate to login
   const handleLogout = () => {
-    localStorage.removeItem('client');
-    navigate('/'); // or wherever your login page route is
+    clearAuth();
+    navigate('/');
   };
 
   return (

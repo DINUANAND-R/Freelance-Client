@@ -20,8 +20,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getUser, clearAuth } from '../../utils/auth';
 
-const API_BASE_URL = 'https://freelance-client-3029.onrender.com/api';
+const API_BASE_URL = 'http://localhost:9000/api';
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -59,7 +60,9 @@ export default function FreelancerDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const freelancer = location.state || {};
+  // Prefer location.state (just logged in), fall back to localStorage (page refresh)
+  const storedUser = getUser();
+  const freelancer = location.state || storedUser || {};
   const { name, email } = freelancer;
 
   const [projects, setProjects] = useState([]);
@@ -166,7 +169,7 @@ export default function FreelancerDashboard() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/')}
+              onClick={() => { clearAuth(); navigate('/'); }}
               className="bg-sky-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-sky-500 transition-colors shadow-md"
             >
               Logout

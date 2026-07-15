@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ArrowLeft, Loader2, Circle, Phone, Video, PhoneOff, Send, Paperclip } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const serverUrl = 'https://freelance-client-3029.onrender.com';
+const serverUrl = 'http://localhost:9000';
 
 export default function ChatComponent({ currentUserEmail, targetUserEmail }) {
     const [messages, setMessages] = useState([]);

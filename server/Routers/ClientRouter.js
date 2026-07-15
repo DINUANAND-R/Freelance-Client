@@ -1,8 +1,9 @@
 // ✅ Routers/ClientRouter.js
 const express = require('express');
 const router = express.Router();
-const Client=require('../Modules/ClientModule')
+const Client = require('../Modules/ClientModule');
 const multer = require('multer');
+const { authMiddleware, requireRole } = require('../Middleware/authMiddleware');
 const {
   registerClient,
   loginClient,
@@ -24,8 +25,8 @@ router.get('/all', async (req, res) => {
   }
 });
 
-// Delete client by email (no encode/decode)
-router.delete('/delete/:email', async (req, res) => {
+// Delete client by email — protected: admin only
+router.delete('/delete/:email', authMiddleware, requireRole('admin'), async (req, res) => {
   try {
     const { email } = req.params; // directly use from URL
 

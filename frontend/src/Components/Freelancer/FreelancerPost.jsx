@@ -69,7 +69,7 @@ const App = () => {
       if (file) data.append('file', file);
 
       const res = await axios.post(
-        'https://freelance-client-3029.onrender.com/api/post/create',
+        'http://localhost:9000/api/post/create',
         data,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );

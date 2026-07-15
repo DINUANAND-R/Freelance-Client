@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Linkedin, Mail, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import axios from 'axios';
+import { getToken, getUser } from '../../utils/auth';
 
 // The main component for the clients list
 export default function ClientsList() {
@@ -13,11 +14,13 @@ export default function ClientsList() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { name, email } = location.state || {};
+    const storedAdmin = getUser();
+    const { name, email } = location.state || storedAdmin || {};
+    const authHeaders = () => ({ Authorization: `Bearer ${getToken()}` });
 
     // Fetch client data from the API
     useEffect(() => {
-        axios.get('https://freelance-client-3029.onrender.com/api/client/all')
+        axios.get('http://localhost:9000/api/client/all', { headers: authHeaders() })
             .then((res) => {
                 setClients(res.data);
                 setIsLoaded(true);
@@ -49,7 +52,10 @@ export default function ClientsList() {
     const handleConfirmBlock = async () => {
         if (!clientToBlock) return;
         try {
-            await axios.delete(`https://freelance-client-3029.onrender.com/api/client/delete/${clientToBlock.email}`);
+            await axios.delete(
+                `http://localhost:9000/api/client/delete/${clientToBlock.email}`,
+                { headers: authHeaders() }
+            );
             setClients(prev => prev.filter(c => c.email !== clientToBlock.email));
             console.log(`Client ${clientToBlock.email} has been blocked.`);
         } catch (err) {
@@ -171,7 +177,7 @@ export default function ClientsList() {
                                     <div className="w-32 h-32 relative mb-6">
                                         <div className="absolute inset-0 bg-indigo-500 rounded-full opacity-20 blur-lg"></div>
                                         <img
-                                            src={client.photo ? `https://freelance-client-3029.onrender.com/${client.photo}` : 'https://placehold.co/400x400/312e81/e0e7ff?text=Client'}
+                                            src={client.photo ? `http://localhost:9000/${client.photo}` : 'https://placehold.co/400x400/312e81/e0e7ff?text=Client'}
                                             alt={client.name}
                                             className="w-full h-full object-cover rounded-full relative ring-4 ring-indigo-600 ring-offset-4 ring-offset-slate-800 transition-transform duration-300 group-hover:scale-105"
                                         />
