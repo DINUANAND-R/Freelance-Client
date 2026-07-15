@@ -25,6 +25,7 @@ const defaultOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'https://freelance-client-hazel.vercel.app',
+  'https://freelance-client-cwr3jlejw-dinuanand890-gmailcoms-projects.vercel.app',
 ];
 const envOrigins = (process.env.FRONTEND_URLS || '')
   .split(',')
