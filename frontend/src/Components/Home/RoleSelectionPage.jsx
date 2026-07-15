@@ -23,12 +23,7 @@ export default function RoleSelectionPage() {
         </svg>
     );
 
-    const IconShieldHalved = () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-4xl md:text-5xl">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            <path d="M12 18v-6h4"></path>
-        </svg>
-    );
+
 
     // Define Framer Motion variants for staggered animations
     const containerVariants = {
@@ -89,7 +84,7 @@ export default function RoleSelectionPage() {
 
             {/* Role Cards Grid */}
             <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full max-w-7xl"
+                className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 w-full max-w-4xl"
                 variants={containerVariants}
             >
                 {/* Client Card */}
@@ -142,39 +137,7 @@ export default function RoleSelectionPage() {
                     </Link>
                 </motion.div>
 
-                {/* Admin Card */}
-                <motion.div
-                    className="bg-gray-800 rounded-3xl shadow-lg p-8 md:p-10 text-center flex flex-col justify-between border-t-4 border-white transform transition-all duration-300"
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4)" }}
-                    whileTap={{ scale: 0.98 }}
-                    animate={{
-                        scale: [1, 1.01, 1], // Gentle pulsing animation
-                        transition: {
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }
-                    }}
-                >
-                    <motion.div
-                        className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full bg-white text-gray-900 flex items-center justify-center mb-6 md:mb-8"
-                        whileHover={{ scale: 1.1, rotate: 15 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <IconShieldHalved />
-                    </motion.div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">For Admins</h2>
-                    <p className="text-gray-400 mb-6 flex-grow text-sm md:text-base">
-                        Manage platform users, monitor activity, and maintain system integrity with powerful tools.
-                    </p>
-                    <Link
-                        to="/admin/Login"
-                        className="inline-block bg-white text-gray-900 font-semibold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors duration-300 transform hover:scale-105"
-                    >
-                        Login as Admin
-                    </Link>
-                </motion.div>
+
             </motion.div>
         </motion.div>
     );

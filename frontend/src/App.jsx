@@ -67,8 +67,7 @@ export default function App() {
       <Route path="/freelancer/login"  element={<FreelancerLogin />} />
       <Route path="/freelancer/Login"  element={<FreelancerLogin />} />
       <Route path="/freelancer/SignUp" element={<FreelancerSignUp />} />
-      <Route path="/admin/login"       element={<AdminLogin />} />
-      <Route path="/admin/Login"       element={<AdminLogin />} />
+      <Route path="/secure-admin-portal"  element={<AdminLogin />} />
 
       {/* Public browsing */}
       <Route path="/freelancers"       element={<FreelancersList />} />

@@ -9,7 +9,7 @@ import { isAuthenticated, getRole } from '../utils/auth';
 const loginRoutes = {
   freelancer: '/freelancer/login',
   client: '/client/login',
-  admin: '/admin/login',
+  admin: '/secure-admin-portal',
 };
 
 /**
