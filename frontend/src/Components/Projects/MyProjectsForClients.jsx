@@ -18,7 +18,7 @@ export default function MyProjectsForClients() {
     if (email) {
       setLoading(true);
       axios
-        .get(`http://localhost:9000/api/projects/client/${email}`)
+        .get(`https://freelance-client-3029.onrender.com/api/projects/client/${email}`)
         .then(res => {
           setProjects(res.data);
           setLoading(false);
@@ -38,7 +38,7 @@ export default function MyProjectsForClients() {
   const markAsCompleted = async (id) => {
     try {
       setUpdatingId(id);
-      await axios.put(`http://localhost:9000/api/projects/${id}/complete`);
+      await axios.put(`https://freelance-client-3029.onrender.com/api/projects/${id}/complete`);
       setProjects(prev =>
         prev.map(p => p._id === id ? { ...p, status: 'completed' } : p)
       );

@@ -33,10 +33,10 @@ export default function AdminDashboard() {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       try {
         const [freelancersRes, clientsRes, projectsRes, allProjectsRes] = await Promise.all([
-          axios.get('http://localhost:9000/api/admin/freelancers', { headers }),
-          axios.get('http://localhost:9000/api/admin/clients', { headers }),
-          axios.get('http://localhost:9000/api/admin/projects', { headers }),
-          axios.get('http://localhost:9000/api/projects/all'),
+          axios.get('https://freelance-client-3029.onrender.com/api/admin/freelancers', { headers }),
+          axios.get('https://freelance-client-3029.onrender.com/api/admin/clients', { headers }),
+          axios.get('https://freelance-client-3029.onrender.com/api/admin/projects', { headers }),
+          axios.get('https://freelance-client-3029.onrender.com/api/projects/all'),
         ]);
 
         setFreelancers(freelancersRes.data);

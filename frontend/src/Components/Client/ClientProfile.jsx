@@ -42,7 +42,7 @@ const ClientProfile = () => {
 
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:9000/api/client/profile/${email}`);
+        const res = await axios.get(`https://freelance-client-3029.onrender.com/api/client/profile/${email}`);
         setProfile(res.data);
       } catch (err) {
         console.error('Error fetching client profile:', err);
@@ -51,7 +51,7 @@ const ClientProfile = () => {
 
     const fetchLoginDates = async () => {
       try {
-        const res = await axios.get(`http://localhost:9000/api/client/login-activity/${email}`);
+        const res = await axios.get(`https://freelance-client-3029.onrender.com/api/client/login-activity/${email}`);
         // Convert ISO strings to Date objects
         setLoginDates(res.data.map(date => new Date(date)));
       } catch (err) {
@@ -61,7 +61,7 @@ const ClientProfile = () => {
 
     const fetchProjectStats = async () => {
       try {
-        const res = await axios.get(`http://localhost:9000/api/projects/project-status/${email}`);
+        const res = await axios.get(`https://freelance-client-3029.onrender.com/api/projects/project-status/${email}`);
         setProjectStats(res.data);
       } catch (err) {
         console.error('Error fetching project status counts:', err);
@@ -70,7 +70,7 @@ const ClientProfile = () => {
 
     const fetchRecentProjects = async () => {
       try {
-        const res = await axios.get(`http://localhost:9000/api/projects/client/recent/${email}`);
+        const res = await axios.get(`https://freelance-client-3029.onrender.com/api/projects/client/recent/${email}`);
         setRecentProjects(
           res.data.slice(0, 3).map(proj => ({
             ...proj,
@@ -169,7 +169,7 @@ const ClientProfile = () => {
             {/* Left Side: Image & Details */}
             <div className="flex-shrink-0 w-full lg:w-1/3 flex flex-col items-center lg:items-start">
               <motion.img
-                src={`http://localhost:9000/${profile.photo}`}
+                src={`https://freelance-client-3029.onrender.com/${profile.photo}`}
                 alt="Profile"
                 className="w-32 h-32 rounded-full mb-4 object-cover border-4 border-emerald-500 shadow-md"
                 initial={{ scale: 0, rotate: -180 }}

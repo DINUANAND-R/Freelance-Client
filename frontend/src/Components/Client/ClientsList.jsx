@@ -16,7 +16,7 @@ export default function ClientsList() {
   useEffect(() => {
     // This is a placeholder API call.
     // In a real application, you might want to handle authentication.
-    axios.get('http://localhost:9000/api/client/all')
+    axios.get('https://freelance-client-3029.onrender.com/api/client/all')
       .then((res) => setClients(res.data))
       .catch((err) => console.error('Failed to fetch clients', err));
   }, []);
@@ -141,7 +141,7 @@ export default function ClientsList() {
                 style={{ transitionDelay: `${index * 0.05}s` }}
               >
                 <img
-                  src={client.photo ? `http://localhost:9000/${client.photo}` : "https://placehold.co/150x150/CFE2F3/000000?text=No+Photo"}
+                  src={client.photo ? `https://freelance-client-3029.onrender.com/${client.photo}` : "https://placehold.co/150x150/CFE2F3/000000?text=No+Photo"}
                   alt={client.name}
                   className="w-36 h-36 object-cover rounded-full mb-6 border-4 border-blue-400 shadow-lg"
                 />

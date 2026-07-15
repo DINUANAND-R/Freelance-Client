@@ -4,7 +4,7 @@
 import axios from 'axios';
 import { getToken, clearAuth } from './auth';
 
-const API_BASE_URL = 'http://localhost:9000';
+const API_BASE_URL = 'https://freelance-client-3029.onrender.com';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,

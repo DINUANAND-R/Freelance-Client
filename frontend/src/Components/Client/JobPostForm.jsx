@@ -36,7 +36,7 @@ export default function JobPostForm() {
     setIsSubmitting(true);
 
     try {
-      const res = await axios.post("http://localhost:9000/api/job/create", formData);
+      const res = await axios.post("https://freelance-client-3029.onrender.com/api/job/create", formData);
       console.log("Job created:", res.data);
       alert("✅ Job Posted Successfully!");
       

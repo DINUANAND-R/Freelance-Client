@@ -20,7 +20,7 @@ export default function ClientJobRequests() {
 
   const fetchRequests = () => {
     axios
-      .get(`http://localhost:9000/api/jobRequest/client/${clientEmail}`)
+      .get(`https://freelance-client-3029.onrender.com/api/jobRequest/client/${clientEmail}`)
       .then((res) => {
         setRequests(res.data);
         setLoading(false);
@@ -33,7 +33,7 @@ export default function ClientJobRequests() {
 
   const updateStatus = (id, status) => {
     axios
-      .put(`http://localhost:9000/api/jobRequest/update/${id}`, { status })
+      .put(`https://freelance-client-3029.onrender.com/api/jobRequest/update/${id}`, { status })
       .then(() => {
         alert(`Request ${status}`);
         fetchRequests();
@@ -42,7 +42,7 @@ export default function ClientJobRequests() {
   };
 
   const handleViewResume = (fileName) => {
-    const url = `http://localhost:9000/uploads/resumes/${fileName}`;
+    const url = `https://freelance-client-3029.onrender.com/uploads/resumes/${fileName}`;
     setResumeUrl(url);
     setModalOpen(true);
   };
